@@ -1,0 +1,25 @@
+{
+  "name": "writing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nr-johnson/writing.git"
+  },
+  "author": "NRJohnson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nr-johnson/writing/issues"
+  },
+  "homepage": "https://github.com/nr-johnson/writing#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mongodb": "^4.7.0",
+    "pug": "^3.0.2"
+  }
+}
