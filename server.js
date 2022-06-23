@@ -3,7 +3,10 @@ require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const path = require('path')
-const connectMongo = require('./functions/connect-mongo') // middleware to connect to mongodb
+const axios = require('axios');
+const expressSession = require('express-session');
+const MongoStore = require('connect-mongo')
+const connectMongo = require('./functions/mongo-connection') // middleware to connect to mongodb
 const ops = require('./functions/ops') // middleware functions to get data from mongodb
 
 const app = express()
@@ -17,11 +20,37 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(expressSession({
+    secret: 'max',
+    saveUninitialized: false,
+    resave: false,
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),  
+}))
 app.use(connectMongo(process.env.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true}))
 app.use(ops.dataOps())
 
 const routes = require('./routes')
-app.use('/', routes)
+app.use('/api', routes)
+
+app.get(['/','/:id'], async (req, res, next) => {
+    if(req.params.id) {
+        req.session.route = req.params.id
+        res.redirect('/')
+    } else {
+        const route = req.session.route || ''
+        const url = `https://${req.hostname}/api/${route}`
+        const data = await axios.get(url).then(response => {
+            return response.data
+        }).catch(error => {
+            return error
+        });
+        req.session.route = null
+
+        res.render('main', {
+            data: data
+        })
+    }
+})
 
 // Server ---
 const http = require('http')

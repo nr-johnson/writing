@@ -9,9 +9,13 @@ html(lang="en")
         link(rel="stylesheet", href="/stylesheets/style.css")
         block head
     body
-        header
-
-        main(class='container')
-            block content
+        main(class='container p-0')
+            include templates/header.pug
+            div#body
+                div#content
+                    if data
+                        | !{data}
         
-        footer
+            include templates/footer.pug
+        
+        script(src='/script.js')

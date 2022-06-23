@@ -1,9 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel&family=Lato:wght@100;300;400;700&display=swap');
+:root {
+    --canvas: #EBF0F5;
+    --accent: #0C3B5D;
+}
+
 body {
-    background: linear-gradient(to bottom right, rgb(35, 37, 41), rgb(11, 12, 24))
+    background-color: #7B8791;
+    /* background: linear-gradient(to top left, #40373F, #032059) */
 }
 
 .container {
-    background-color: #333;
-    color: white;
+    position: relative;
     min-height: 100vh;
+}
+.row {
+    width: 100%;
+    margin: auto;
+}
+
+/* HEADER */
+#header {
+    position: relative;
+    width: 100%;
+    height: 6rem;
+    font-family: 'Lato', sans-serif;
+}
+#brand a {
+    font-family: 'Cinzel', serif;
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--canvas);
+    text-decoration: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, calc(-50% - .5rem));
+}
+#brand a::before {
+    content: "";
+    height: 1px;
+    width: 100%;
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    background-color: var(--canvas);
+}
+#brand a::after {
+    content: "Fantasy Story Writer";
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    bottom: -1.25rem;
+    font-size: .75rem;
+    left: 0;
+}
+.header-nav {
+    position: relative;
+}
+.header-nav ul {
+    position: absolute;
+    font-weight: 400;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.header-nav.right ul {
+    left: 0;
+    text-align: start;
+}
+.header-nav a {
+    color: var(--canvas);
+    text-decoration: none;
+}
+.header-nav li {
+    list-style: none;
+    display: inline;
+    margin-left: 1rem;
+}
+.header-nav.right li {
+    margin-left: 0;
+    margin-right: 1rem;
+}
+/* ^^ HEADER */
+
+#body {
+    position: relative;
+    padding: 1rem 1rem 7rem 1rem;
+    background-color: var(--canvas);
+    min-height: calc(100vh - 6rem);
+    border-radius: 2px 2px 0 0;
+}
+#content {
+    transition: .25s;
+}   
+#content.fade {
+    opacity: 0;
+    transition: .25s;
+}
+
+#footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 6rem;
+    background-color: var(--accent);
+}
+
+@media (min-width: 1200px) {
+    .container {
+        min-width: 40rem;
+        max-width: 60rem;
+    }
 }
