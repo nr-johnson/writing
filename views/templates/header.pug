@@ -1,16 +1,24 @@
-div#header
+div#header(data-loc='/' + route)
     div(class='row h-100')
+        div#headerNavSelectorContainer(class='d-none d-sm-block')
         nav#headerNavLeft(class='col-4 text-end header-nav')
-            ul(class='d-none d-sm-inline-block m-0 p-0 pe-5 pe-md-3 pe-lg-0')
+            ul(class='d-none d-sm-inline-block m-0 p-0')
                 li 
                     a(href='/' class='nav-redir') Home
                 li
-                    a(href='/blog' class='nav-redir') Blog
+                    a(href='/stories' class='nav-redir') Stories
         div#brand(class='col-4 text-center')
-            a(href='/') NRJohnson
+            a(href='/' class='nav-redir') NRJohnson
+                figure
+                    img(src="/images/logo.png", alt="NRJohnson Logo")
         nav#headerNavRight(class='col-4 text-end header-nav right')
-            ul(class='d-none d-sm-inline-block m-0 p-0 ps-5 ps-md-3 ps-lg-0')
+            ul(class='d-none d-sm-inline-block m-0 p-0')
                 li 
                     a(href='/map' class='nav-redir') Map
                 li
                     a(href='/contact' class='nav-redir') Contact
+        div#headerSocial(class='text-end')
+            a(href='#' target='_blank')
+                figure(class='social-link-img')
+                    img(src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2F1000logos.net%2Fwp-content%2Fuploads%2F2016%2F11%2Ffacebook-emblem.jpg&f=1&nofb=1", alt="Facebook")
+        

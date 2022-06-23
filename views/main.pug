@@ -8,6 +8,7 @@ html(lang="en")
         link(rel="stylesheet", href="/stylesheets/bootstrap.min.css.map")
         link(rel="stylesheet", href="/stylesheets/style.css")
         block head
+            title= route ? 'NRJohnson | ' + route.substring(0,1).toUpperCase() + route.substring(1) : 'NRJohnson | Home'
     body
         main(class='container p-0')
             include templates/header.pug
