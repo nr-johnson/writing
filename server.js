@@ -35,11 +35,12 @@ app.use('/api', routes)
 app.get(['/','/:id'], async (req, res, next) => {
     if(req.params.id) {
         req.session.route = req.params.id
+        req.session.redir = true
         res.redirect('/')
     } else {
-        const route = req.session.route || ''
+        const route = req.session.redir ? req.session.route || '' : ''
+        req.session.redir = null
         const url = `https://${req.hostname}/api/${route}`
-        console.log(url)
         const data = await axios.get(url).then(response => {
             return response.data
         }).catch(error => {
