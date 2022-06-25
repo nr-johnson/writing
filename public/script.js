@@ -1,6 +1,5 @@
 // Highjacks the functionality of all links so the data can be loaded without loading a new page (discount react).
 document.querySelectorAll('.nav-redir').forEach(link => {
-    const content = document.getElementById('content')
     link.addEventListener('click', (event) => {
         pageChange(null, new URL(link.href).pathname) // Changes the page, second variable is the url path
         event.preventDefault() // Prevent link from navigating the page.
@@ -9,7 +8,13 @@ document.querySelectorAll('.nav-redir').forEach(link => {
 
 // Function that loads new page data onto the site.
 async function pageChange(event, route) {
+    const content = document.getElementById('content') // Div for data to be loaded into.
     event ? event.preventDefault() : null // If called by popstate it prevents it from navigating to its default location.
+    
+    // Sets attribute on header that is used to style nav indicator
+    document.getElementById('mainBody').setAttribute('data-loc', route) 
+
+    window.scroll(0,0)
 
     content.classList.add('fade') // Hides pages content
     content.innerHTML = '' // Deletes Page Content
@@ -20,8 +25,7 @@ async function pageChange(event, route) {
     content.innerHTML = data // Adds data to page
     content.classList.remove('fade') // Shows page content
 
-    // Sets attribute on header that is used to style nav indicator
-    document.getElementById('header').setAttribute('data-loc', route) 
+    
 
     // Sets document title (relying on data from server resulted in glitchy behavior)
     // It uses the url path (route variable) unless its the index, which has now path.
@@ -54,11 +58,35 @@ function serverRequest(url, method) {
 // Takes over browser back button
 window.addEventListener('popstate', (e) => {
     const location = history.state;
+    // Changes page data if item was added to history, else it's allowed to navigate back in it's defualt way.
     location ? pageChange(e, location) : window.history.back()
 });
 
 // Adds page state to browser history
 function addToHistory(route) {
     // If the current state is different than the previous, the new state is added to history
-    history.state != route ? history.pushState(route, null, null) : null
+    // It also changes the current url (push state third param), which allows the user to refresh the page without returning to the home page.
+    history.state != route ? history.pushState(route, null, route) : null
+}
+
+// Signup form validation
+document.getElementById('updatesForm').addEventListener('submit', (event) => {
+    event.preventDefault()
+    alert('Hello!')
+})
+
+let mobileToggle = document.getElementById('mobileToggle')
+mobileToggle.addEventListener('click', event => {
+    event.preventDefault()
+    toggleMobileMenu(null)
+})
+
+document.getElementById('mobileNavBack').addEventListener('click', event => {
+    event.preventDefault()
+    toggleMobileMenu(true)
+})
+
+function toggleMobileMenu(close) {
+    const main = document.getElementById('mainBody')
+    close ? main.classList.remove('mobile-toggled') : main.classList.toggle('mobile-toggled')
 }

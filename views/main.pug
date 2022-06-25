@@ -5,18 +5,19 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         link(rel="shortcut icon" type="image/x-icon" href="favicon.ico")
         link(rel="stylesheet", href="/stylesheets/bootstrap.min.css")
-        link(rel="stylesheet", href="/stylesheets/bootstrap.min.css.map")
         link(rel="stylesheet", href="/stylesheets/style.css")
         block head
             title= route ? 'NRJohnson | ' + route.substring(0,1).toUpperCase() + route.substring(1) : 'NRJohnson | Home'
     body
-        main(class='container p-0')
-            include templates/header.pug
-            div#body
-                div#content
-                    if data
-                        | !{data}
-        
-            include templates/footer.pug
+        div#mainBody(data-loc='/' + route)
+            include templates/mobile-menu.pug
+            main(class='container p-0')
+                include templates/header.pug
+                div#body
+                    div#content
+                        if data
+                            | !{data}
+            
+                include templates/footer.pug
         
         script(src='/script.js')

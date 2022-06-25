@@ -1,1 +1,16 @@
 footer#footer
+    section(class='row px-sm-2 pt-3')
+        div(class='col-12')
+            form#updatesForm(name='update' action='/forms/signup')
+                header
+                    h4 Sign Up for Updates
+                div(class='row mt-1')
+                    span(class='col-6 ps-0')
+                        input(type="text" name='name' value='' placeholder='First and Last Name' class='w-100 input-text')
+                    span(class='col-6 pe-0')
+                        input(type="email" name='email' value='' placeholder='Email Address' class='w-100 input-text')
+                div(class='text-end pt-3')
+                    button(class='btn btn-great btn-update') Submit
+    section(class='row px-sm-2 mt-4')
+        div(class='col-12')
+            p(class='copyright') © 2022 Nathanael Johnson - All Rights Reserved

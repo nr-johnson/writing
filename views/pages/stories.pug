@@ -4,3 +4,15 @@ block head
 section(class='row')
     div(class='col-12 text-center')
         h1 My Stories
+
+section(class='row')
+    for story in stories
+        div(class='col-6 ps-0 story-card')
+            div(class='row h-100')
+                figure(class='col-4 m-0 p-0')
+                    img(src=story.image alt=story.title + ' cover image' class='story-image')
+                div(class='col-8 story-content')
+                    h4(class='story-title')= story.title
+                    hr(class='m-0 canvas')
+                    div(class='story-preview')
+                        p= story.preview
