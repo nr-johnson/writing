@@ -63,7 +63,7 @@ hr.canvas {
     width: 100%;
     height: 4rem;
     font-family: 'Lato', sans-serif;
-    z-index: 2;
+    z-index: 5;
 }
 #brand a {
     font-family: 'Cinzel', serif;
@@ -198,11 +198,11 @@ hr.canvas {
 }
 #toggle {
     position: absolute;
-    right: 2rem;
-    top: 1.25rem;
-    height: 1.5rem;
-    width: 1.5rem;
-    z-index: 4;
+    right: 1.5rem;
+    top: .75rem;
+    height: 2.5rem;
+    width: 2.5rem;
+    z-index: 6;
 }
 .mobile-toggle {
     position: absolute;
@@ -216,26 +216,26 @@ hr.canvas {
     position: absolute;
     width: 1.25rem;
     height: .175rem;
-    left: 0;
+    left: .5rem;
     background-color: white;
     margin: 0;
     transition: 0.4s;
 }
 .bar1 {
-    top: .25rem;
+    top: .76rem;
     transform: rotate(-45deg) translate(0, 0);
 }
 .bar2 {
-    bottom: .25rem;
+    bottom: .76rem;
     transform: rotate(45deg) translate(0, 0);
 }
 .mobile-toggled .bar1, #mainBody:target .bar1 {
-    top: .65rem;
+    top: 1.15rem;
     transition: 0.4s;
 }
 
 .mobile-toggled .bar2, #mainBody:target .bar2 {
-    bottom: .65rem;
+    bottom: 1.15rem;
     transition: 0.4s;
 }
 
@@ -245,17 +245,18 @@ hr.canvas {
 }
 #mobileNav {
     position: absolute;
-    top: 8rem;
+    top: 0;
     right: 0;
-    width: 5rem;
-    height: calc(100vh - 4rem);
+    width: 5.5rem;
+    height: 110vh;
     /* background: linear-gradient(to left, var(--accent) 35%, transparent 100%); */
-    background-color: white;
+    background: var(--accent);
+    /* box-shadow: -1px 0 8px var(--accent); */
     z-index: 3;
     transform: translate(100%, -4rem);
     pointer-events: none;
     text-align: end;
-    padding-top: 1rem;
+    padding-top: 9rem;
     transition: .4s;
     overflow: hidden;
 }
@@ -267,7 +268,7 @@ hr.canvas {
     right: 0;
     height: 100vh;
     width: .25rem;
-    background-color: var(--accent);
+    background-color: var(--canvas);
 }
 .mobile-nav-back {
     position: absolute;
@@ -276,7 +277,7 @@ hr.canvas {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #00000080;
+    background: #00000080;
     z-index: 3;
     opacity: 0;
     pointer-events: none;
@@ -290,15 +291,17 @@ hr.canvas {
 }
 .mobile-nav-link {
     position: relative;
-    color: var(--canvas);
-    background-color: var(--accent);
+    color: var(--accent);
+    background-color: var(--canvas);
     /* border: 2px solid var(--canvas); */
     border-radius: 50%;
     text-decoration: none;
     display: block;
     height: 4rem;
     width: 4rem;
-    margin: 0 .7rem 1rem auto;
+    margin: 0 .7rem 2.75rem auto;
+    font-size: 10pt;
+    font-weight: 600;
     transition: .25s;
 }
 .mobile-nav-link::before {
@@ -310,8 +313,8 @@ hr.canvas {
     border-radius: 0 0 50% 0;
     /* background-color: #00000050; */
     top: -3rem;
-    right: -.7rem;
-    box-shadow: .6rem 1rem 0 var(--accent);
+    right: -.63rem;
+    box-shadow: .6rem 2.25rem 0 var(--canvas);
 }
 .mobile-nav-link::after {
     content: "";
@@ -322,11 +325,11 @@ hr.canvas {
     border-radius: 0 50% 0 0;
     /* background-color: #00000050; */
     bottom: -3rem;
-    right: -.7rem;
-    box-shadow: .6rem -1rem 0 var(--accent);
+    right: -.63rem;
+    box-shadow: .6rem -2.25rem 0 var(--canvas);
 }
 .mobile-nav-link:hover, .mobile-nav-link:focus {
-    color: var(--canvas)
+    color: var(--alt);
 }
 
 .mobile-nav-link span {
@@ -335,16 +338,30 @@ hr.canvas {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 2;
+}
+.mobile-nav-link span::before {
+    content: "";
+    position: absolute;
+    display: block;
+    height: 4rem;
+    width: 4rem;
+    top: -1.35rem;
+    right: -5rem;
+    background-color: var(--canvas);
+    z-index: -1;
 }
 .mobile-selector {
     position: absolute;
     height: 4rem;
     width: 4rem;
-    background-color: var(--accent);
-    border-radius: 50%;
+    /* background-color: var(--alt); */
+    /* border: 2px solid var(--canvas); */
+    /* border-radius: 50%; */
     right: .7rem;
-    z-index: -1;
+    /* z-index: 1; */
     opacity: 0;
+    z-index: 1;
     transition: .25s;
 }
 .mobile-selector span{
@@ -352,8 +369,11 @@ hr.canvas {
     height: 4rem;
     width: 4rem;
     background-color: var(--accent);
-    right: -2rem;
-    z-index: -1;
+    border: 2px solid var(--canvas);
+    border-radius: 50%;
+    left: 0;
+    z-index: 1;
+    transition: .25s;
 }
 /* .mobile-selector::before {
     content: "";
@@ -378,25 +398,33 @@ hr.canvas {
     box-shadow: .55rem -.5rem 0 var(--canvas);
 } */
 #mainBody[data-loc='/'] .mobile-selector {
-    top: 1rem;
+    top: 9rem;
     opacity: 1;
+
+    transition-timing-function: linear;
     transition: .25s;
 }
 #mainBody[data-loc='/stories'] .mobile-selector {
-    top: 10rem;
+    top: 15.75rem;
+    /* top: 9rem; */
     opacity: 1;
+    
+    transition-timing-function: linear;
     transition: .25s;
 }
 #mainBody[data-loc='/map'] .mobile-selector {
-    top: 15rem;
+    top: 22.5rem;
     opacity: 1;
+    transition-delay: .25s;
     transition: .25s;
 }
 #mainBody[data-loc='/contact'] .mobile-selector {
-    top: 20rem;
+    top: 29.25rem;
     opacity: 1;
+    transition-delay: .25s;
     transition: .25s;
 }
+
 #mainBody[data-loc='/'] #mobileNav a:nth-child(1) {
     color: var(--canvas);
     transition: .25s;
@@ -412,6 +440,29 @@ hr.canvas {
 #mainBody[data-loc='/contact'] #mobileNav a:nth-child(4) {
     color: var(--canvas);
     transition: .25s;
+}
+#mobileSocial {
+    position: absolute;
+    top: -4rem;
+    left: 4rem;
+    height: 4rem;
+    width: calc(100vw - 5.5rem);
+    z-index: 3;
+    display: inline;
+    padding: 1rem 1.5rem;
+    text-align: end;
+    transition: .4s;
+}
+.mobile-men-social {
+    height: 1.5rem;
+    width: 1.5rem;
+    display: inline-block;
+    margin-left: 1.5rem;
+}
+.mobile-toggled #mobileSocial  {
+    top: 0;
+    left: 0;
+    transition: .4s;
 }
 /* ^^ Mobile Menu */
 
@@ -434,9 +485,10 @@ hr.canvas {
     bottom: 0;
     width: 100%;
     height: 11rem;
-    background-color: var(--accent);
+    background-color: var(--alt);
     border-top: 4px solid var(--accent);
-    color: var(--canvas)
+    color: var(--canvas);
+    z-index: 2;
 }
 
 /* Forms */

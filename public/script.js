@@ -14,7 +14,7 @@ async function pageChange(event, route) {
     // Sets attribute on header that is used to style nav indicator
     document.getElementById('mainBody').setAttribute('data-loc', route) 
 
-    window.scroll(0,0)
+    // window.scroll(0,0)
 
     content.classList.add('fade') // Hides pages content
     content.innerHTML = '' // Deletes Page Content
