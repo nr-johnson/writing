@@ -8,9 +8,11 @@ document.querySelectorAll('.nav-redir').forEach(link => {
 
 // Function that loads new page data onto the site.
 async function pageChange(event, route) {
-    const content = document.getElementById('content') // Div for data to be loaded into.
     event ? event.preventDefault() : null // If called by popstate it prevents it from navigating to its default location.
     
+    if(new URL(window.location).pathname == route) return // Prevents the page from reloading the same information.
+
+    const content = document.getElementById('content') // Div for data to be loaded into.
     // Sets attribute on header that is used to style nav indicator
     document.getElementById('mainBody').setAttribute('data-loc', route) 
 
