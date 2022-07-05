@@ -9,8 +9,14 @@ const pretty = require('pretty')
 
 // Get content for home page
 router.get('/', async (req, res) => {
-    const stories = await req.findMany('writing', 'stories', {})
-    res.render('pages/index')
+    let stories = await req.findMany('writing', 'stories', {published: true})
+    stories.sort(function(a, b){
+        return a.date < b.date ? -1 : 1 
+        return 0
+    });
+    res.render('pages/index', {
+        story: stories[0]
+    })
 })
 
 // Gets content for blog page
