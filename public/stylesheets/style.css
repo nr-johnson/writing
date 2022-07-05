@@ -4,6 +4,7 @@
     --alt: #c7cdd4;
     --accent: #0C3B5D;
     --great: #19661d;
+    --caution: #9e1919;
 }
 html {
     scroll-behavior: smooth;
@@ -28,17 +29,17 @@ h1, h2, h3, h4 {
     font-size: 18pt;
     font-weight: 600;
 }
-a:not(.no-nav, .btn) {
+a:not(.no-nav, .btn, .nav-redir) {
     position: relative;
     color: var(--accent)
 }
-a:not(.no-nav, .btn):hover {
+a:not(.no-nav, .btn, .nav-redir):hover {
     color: var(--accent);
     text-decoration: none;
     opacity: .95;
 }
 
-a:not(.no-nav, .btn)[data-tip]::after {
+a:not(.no-nav, .btn, .nav-redir)[data-tip]::after {
     content: attr(data-tip);
     position: absolute;
     text-align: center;
@@ -95,7 +96,7 @@ hr.canvas {
 .text-image {
     display: inline-block;
     position: relative;
-    top: -.15rem;
+    top: -.1rem;
     width: .75rem;
     margin-bottom: 0;
 }
@@ -484,13 +485,29 @@ hr.canvas {
 }
 
 /* Forms */
-.input-text[value=''] {
+.form-label {
+    color: var(--accent);
+}
+.form-label span {
+    color: var(--caution);
+}
+.input-text {
     border: none;
-    border-bottom: 1px solid var(--canvas);
-    background: none;
+    border-radius: 2px 2px 0 0;
+    padding: .25rem;
+    border-bottom: 1px solid var(--accent);
+    background-color: #ffffff70;
     outline: none;
     font-size: 10pt;
-    color: var(--canvas)
+    color: var(--accent)
+}
+.input-text.sub {
+    border-bottom: 1px solid var(--canvas);
+    color: var(--canvas);
+    background: none;
+}
+textarea.input-text {
+    min-height: 8rem;
 }
 .btn {
     background-color: var(--accent);
@@ -572,6 +589,53 @@ hr.canvas {
 }
 /* ^^ Stories Page */
 
+/* Custom Alert Box */
+#myAlert {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: .25s;
+}
+#myAlertBack {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #00000080;
+}
+#myAlert.alert {
+    opacity: 1;
+    pointer-events: all;
+    transition: .25s;
+}
+.my-alert-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1rem;
+    min-width: 12rem;
+    background-color: var(--accent);
+    color: var(--canvas);
+    border: 2px solid var(--canvas);
+    border-radius: 4px;
+    box-shadow: 0 0 4px #00000050;
+}
+#myAlertText hr {
+    margin-bottom: .75rem;
+}
+#myAlertText p {
+    margin-bottom: 2px;
+}
+/* ^^ Custom Alert Box */
+
 
 /* Break Points */
 /* Height */
@@ -583,7 +647,7 @@ hr.canvas {
     #mobileNav {
         right: 0;
         width: 5rem;
-        height: 110vh;
+        height: 100vh;
         margin-left: auto;
         z-index: 3;
         transform: translate(100%, -4rem);
@@ -591,6 +655,10 @@ hr.canvas {
         padding-top: 9rem;
         text-align: end;
         transition: .4s;
+    }
+    .mobile-toggled #mobileNav {
+        height: 110vh;
+        transition: 0;
     }
     .mobile-nav-link {
         border-radius: 50%;
@@ -662,6 +730,12 @@ hr.canvas {
     }
     .btn-update {
         width: unset;
+    }
+    textarea.input-text {
+        min-height: 16rem;
+    }
+    .my-alert-box {
+        max-width: 50rem;
     }
 }
 @media (min-width: 992px) { /* Large screen */

@@ -77,18 +77,65 @@ document.getElementById('updatesForm').addEventListener('submit', (event) => {
     alert('Hello!')
 })
 
+// Contact form validation
+const form = document.getElementById('contactForm')
+form ? form.addEventListener('submit', (event) => {
+    event.preventDefault()
+    const fields = form.querySelectorAll('.input-text')
+
+    let errors = []
+
+    fields.forEach(inp => {
+        const emailValidation = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+        const cleanTitle = inp.getAttribute('cleanTitle')
+        inp.value.length < 1 ? errors.push(cleanTitle + ' cannot be empty.') : inp.name == 'email' ? emailValidation.test(inp.value) ? null : errors.push(cleanTitle + ' is invalid.') : null
+    })
+
+    myAlert('<h3>Oops...</h4><hr>' + errors.map(err => {
+        return '<p>' + err + '</p>'
+    }).join(''))
+}) : null
+
+// Detects mobile menu button press
 let mobileToggle = document.getElementById('mobileToggle')
 mobileToggle.addEventListener('click', event => {
     event.preventDefault()
     toggleMobileMenu(null)
 })
 
+// Detects when the user touches outside of the mobile menu while it's open.
 document.getElementById('mobileNavBack').addEventListener('click', event => {
     event.preventDefault()
     toggleMobileMenu(true)
 })
 
+// Opens and closes the mobile menu
 function toggleMobileMenu(close) {
+    // "close" variable to to allow the menu to be closed rather than toggled.
+        // This prevents unwanted opening of the menu.
     const main = document.getElementById('mainBody')
     close ? main.classList.remove('mobile-toggled') : main.classList.toggle('mobile-toggled')
 }
+
+// Toggles my custom alert box.
+function myAlert(message, close) {
+    const myAlert = document.getElementById('myAlert')
+    const text = document.getElementById('myAlertText')
+
+    if(close) {
+        myAlert.classList.remove('alert')
+        window.setTimeout(() => {text.innerHTML = ''}, 300) // Prevent awekward collapse of box as it fades.
+    } else if(message) {
+        text.innerHTML = message
+        myAlert.classList.add('alert')
+    }
+}
+
+// Closes custom alert box when "OK" button is pressed.
+document.getElementById('myAlertOK').addEventListener('click', () => {
+    myAlert(null, true)
+})
+// Closes custom alert when user clicks outside the box.
+document.getElementById('myAlertBack').addEventListener('click', () => {
+    myAlert(null, true)
+})

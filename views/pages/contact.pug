@@ -2,5 +2,27 @@ block head
     //- title NRJohnson | Contact
 
 section(class='row')
-    div(class='col-12 text-center')
+    div(class='col-12 text-center page-title')
         h1 Contact Me
+
+section(class='row mt-3')
+    form#contactForm(class='col-12' action='/forms/contact' method='POST')
+        div(class='row')
+            div(class='col-6')
+                input#firstName(type="text" cleanTitle='First Name' name='firstName' class='input-text w-100')
+                label(for='firstName' class='form-label') First Name
+                    span  *
+            div(class='col-6')
+                input#lastName(type="text" cleanTitle='Last Name' name='lastName' class='input-text w-100')
+                label(for='lastName' class='form-label') Last Name
+                    span  *
+            div(class='col-12 mt-2')
+                input#email(type="text" cleanTitle='Email' name='email' class='input-text w-100')
+                label(for='email' class='form-label') Email
+                    span  *
+            div(class='col-12 mt-2')
+                textarea#message(name='message' cleanTitle='Message' class='input-text w-100')
+                label(for='message' class='form-label') Message
+                    span  *
+            div(class='col-12 col-md-2 ms-auto text-end mt-4')
+                button(class='btn w-100') Send

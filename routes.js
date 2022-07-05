@@ -15,29 +15,7 @@ router.get('/', async (req, res) => {
 
 // Gets content for blog page
 router.get('/stories', async (req, res) => {
-    // const url = `https://vocal.media/fiction/fifty-six` // axios url string.
-    // // This is axios grabbing the page data from the "api" routes and adding the response to a variable.
-    // const data = await axios.get(url).then(response => {
-    //     return response.data
-    // }).catch(error => {
-    //     return error
-    // });
-    // const html = cheerio.load(data)
-    // const image = html(".css-cg8l2w-HeroUnsplashImage")
-    // const story = html('.css-1mu5bpv-TextContent-PostPage')
-    // const media = {
-    //     title: 'Fifty Six',
-    //     image: image.attr('src'),
-    //     story: story,
-    //     url: url
-    // }
-    // const stories = [media]
-    
     let stories = await req.findMany('writing', 'stories', {published: true})
-    
-    // const content = cheerio.load(stories[0].content)("p").text()
-    // const preview = content.split(' ').slice(0, 60).join(' ')
-    // console.log(preview)
     
     res.render('pages/stories', {
         stories: stories
@@ -52,6 +30,11 @@ router.get('/map', (req, res) => {
 // Gets Contect Me page
 router.get('/contact', (req, res) => {
     res.render('pages/contact')
+})
+
+// Contact form post
+router.post('/contact', (req, res) => {
+    res.send(req.body)
 })
 
 module.exports = router

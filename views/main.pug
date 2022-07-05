@@ -9,6 +9,13 @@ html(lang="en")
         block head
             title= route ? 'NRJohnson | ' + route.substring(0,1).toUpperCase() + route.substring(1) : 'NRJohnson | Home'
     body
+        div#myAlert
+            div#myAlertBack
+            div(class='row my-alert-box')
+                div(class='col-12')
+                    p#myAlertText Alert!
+                div(class='col-12 mt-2')
+                    a#myAlertOK(href='#' class='btn w-100') OK
         div#mainBody(data-loc='/' + route)
             include templates/mobile-menu.pug
             main(class='container p-0')
@@ -19,5 +26,6 @@ html(lang="en")
                             | !{data}
             
                 include templates/footer.pug
+        
         
         script(src='/script.js')
