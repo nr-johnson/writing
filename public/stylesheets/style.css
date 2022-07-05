@@ -422,7 +422,7 @@ hr.canvas {
     position: relative;
     padding: 2rem 1rem 12rem 1rem;
     background-color: var(--canvas);
-    min-height: calc(100vh - 4rem);
+    min-height: calc(100vh - 15rem);
     border-radius: 2px 2px 0 0;
     
 } 
@@ -437,7 +437,7 @@ hr.canvas {
     bottom: 0;
     width: 100%;
     height: 11rem;
-    background-color: var(--alt);
+    background-color: var(--accent);
     border-top: 4px solid var(--accent);
     color: var(--canvas);
     z-index: 2;
@@ -537,7 +537,7 @@ hr.canvas {
 /* Break Points */
 /* Height */
 /* Used for swithing things when the screen is in landscape view */
-@media (min-height: 600px) {
+@media (min-height: 500px) {
     #mainBody.mobile-toggled .container {
         transform: translate(-5rem, 4rem);
     }
@@ -563,6 +563,7 @@ hr.canvas {
         top: -3rem;
         right: -.63rem;
         box-shadow: .6rem 2.25rem 0 var(--canvas);
+        pointer-events: none;
     }
     .mobile-nav-link::after {
         content: "";
@@ -574,6 +575,7 @@ hr.canvas {
         bottom: -3rem;
         right: -.63rem;
         box-shadow: .6rem -2.25rem 0 var(--canvas);
+        pointer-events: none;
     }
 
     .mobile-nav-link {
