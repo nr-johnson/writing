@@ -47,15 +47,18 @@ router.post('/contact', (req, res) => {
                 members: [
                     {
                         email_address: req.body.email,
+                        tags: ['Contact Form'],
                         merge_fields: 
                             {
                                 FNAME: req.body.firstName,
                                 LNAME: req.body.lastName
                             },
+                        interests: {
+                            '8bd27fd3aa': true
+                        },
                         status: req.body.subscribe ? 'subscribed' : 'unsubscribed'
                     }
-                ],
-                // update_existing: true
+                ]
             }
             var mailOptions = {
                 from: 'Stories - NRJohnson <contact@nrjohnson.net>',
@@ -86,17 +89,21 @@ router.post('/signup', async (req, res) => {
                 members: [
                     {
                         email_address: req.body.email,
+                        tags: ['Subscribe Form'],
                         merge_fields: 
                             {
                                 FNAME: req.body.name.split(' ')[0],
                                 LNAME: req.body.name.split(' ')[1]
                             },
+                        interests: {
+                            '8bd27fd3aa': true
+                        },
                         status: 'subscribed'
                     }
                 ],
-                // update_existing: true
+                update_existing: true
             }
-            let submit = await req.mailChimp(data, `${process.env.MAILCHIMP_API_URL}/lists/${process.env.MAILCHIMP_AUDIENCE_ID}`)
+            let submit = await req.mailChimp(data, `${process.env.MAILCHIMP_API_URL}/lists/${process.env.MAILCHIMP_AUDIENCE_ID}/members/${req.body.email}`, 'PUT')
             res.send(submit)
         } else {
             res.send({ok: false, resp: 'Captcha score too low.'})

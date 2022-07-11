@@ -41,8 +41,22 @@ function dataOps() {
 
 function siteOps() {
     return (req, res, next) => {
+        // Adds or updates memeber in mailchimp.
         req.mailChimp = (data, dir, method) => {
-            return new Promise(resolve => {                
+            return new Promise(resolve => {
+                // const checkOptions = {
+                //     url: `${process.env.MAILCHIMP_API_URL}/lists/${process.env.MAILCHIMP_AUDIENCE_ID}/members/${data.members[0].email_address}`,
+                //     method: 'GET',
+                //     headers: {
+                //         Authorization: `auth ${process.env.MAILCHIMP_KEY}`
+                //     }
+                // }
+                // let status
+                // request(checkOptions, (error, response, body) => {
+                //     status = JSON.parse(body).status
+                // })
+                // status != 'subscribed' ? data.update_existing = true : null      
+                console.log(data)
                 const mailOptions = {
                     url: dir,
                     method: method || "POST",
