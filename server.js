@@ -27,16 +27,18 @@ app.use(expressSession({
 }))
 // Establishes connection with mongodb.
 app.use(connectMongo(process.env.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true}))
-app.use(ops.dataOps()) // My custom functions for getting data from mongodb.
+app.use(ops.dataOps(), ops.siteOps(), ops.emailOps()) // My custom functions for getting data from mongodb.
 
 // All pages render the same "main.pug" file.
 // Data for each page is gathered from the "api" routes using axios then sent as data to the page.
 // This is done because the site is a single page app, data is gathered and added to the page rather than a new page being loaded.
 
-const routes = require('./routes') // "api" routes. Data that is added to the "main.pug" page dynamically.
-app.use('/api', routes)
+const apiRoutes = require('./routes/api') // "api" routes. Data that is added to the "main.pug" page dynamically.
+const formRoutes = require('./routes/forms')
+app.use('/api', apiRoutes)
+app.use('/forms', formRoutes)
 
-// All requests that don't start with "/api" land here.
+// All requests that don't start with "/api" or "/forms" land here.
 app.get(['/','/:page'], async (req, res, next) => {
     // the page param is used to determin what content to load from the "api" routes.
     const route = req.params.page || '' // if blank it grabs the index page.
@@ -48,18 +50,24 @@ app.get(['/','/:page'], async (req, res, next) => {
         console.log(error.status)
         return error.response
     });
-    
+    const msg = req.session.message
+    req.session.message = null
+
+    const err = req.session.error
+    req.session.error = null
 
     // Renders the "main.pug" file and sends the data gathered from axios.
     res.render('main', {
         data: data,
-        route: route
+        route: route,
+        message: msg,
+        error: err
     })
 })
 
 // Server ---
 const http = require('http')
-const PORT = process.env.PORT || 8000
+const PORT = process.env.PORT || 3000
 
 app.set('port', PORT)
 

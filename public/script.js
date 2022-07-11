@@ -8,9 +8,12 @@ document.querySelectorAll('.nav-redir').forEach(link => {
 
 // Function that loads new page data onto the site.
 async function pageChange(event, route) {
-    event ? event.preventDefault() : null // If called by popstate it prevents it from navigating to its default location.
-    
-    if(new URL(window.location).pathname == route) return // Prevents the page from reloading the same information.
+    if(event) {
+        event.preventDefault() // If called by popstate it prevents it from navigating to its default location.
+        
+    } else {
+        if(new URL(window.location).pathname == route) return // Prevents the page from reloading the same information.
+    }
 
     const content = document.getElementById('content') // Div for data to be loaded into.
     // Sets attribute on header that is used to style nav indicator
@@ -21,7 +24,7 @@ async function pageChange(event, route) {
     content.classList.add('fade') // Hides pages content
     content.innerHTML = '' // Deletes Page Content
 
-    const url = `https://${window.location.hostname}/api${route}`
+    const url = 'https://' + window.location.hostname + '/api' + route
     const data = await serverRequest(url, 'GET') // Gets data from server
     
     content.innerHTML = data // Adds data to page
@@ -37,8 +40,21 @@ async function pageChange(event, route) {
     addToHistory(route)
 }
 
+function protectedServerRequest(url, method, data) {
+    return new Promise(resolve => {
+        grecaptcha.ready(function() {
+            grecaptcha.execute('6Lc-pd0gAAAAAOyqsmvkY10zycG3SCQKdelhMEsX', {action: 'submit'}).then(async token => {
+                data.token = token
+                const resp = await serverRequest(url, method, data)
+                resolve(resp)
+            });
+        });
+    })
+    
+}
+
 // Handles all front-end server requests
-function serverRequest(url, method) {
+function serverRequest(url, method, data) {
     return new Promise(resolve => {
         let xhttp = new XMLHttpRequest();
 
@@ -53,7 +69,12 @@ function serverRequest(url, method) {
         };
         
         xhttp.open(method, url);
-        xhttp.send()
+        if(data) {
+            xhttp.setRequestHeader( 'Content-Type', 'application/json' )
+            xhttp.send(JSON.stringify(data))
+        } else {
+            xhttp.send()
+        }
     })
 }
 
@@ -62,6 +83,7 @@ window.addEventListener('popstate', (e) => {
     const location = history.state;
     // Changes page data if item was added to history, else it's allowed to navigate back in it's defualt way.
     location ? pageChange(e, location) : window.history.back()
+    
 });
 
 // Adds page state to browser history
@@ -72,29 +94,105 @@ function addToHistory(route) {
 }
 
 // Signup form validation
-document.getElementById('updatesForm').addEventListener('submit', (event) => {
-    event.preventDefault()
-    alert('Hello!')
-})
+async function signUp(event, form) {
+    event.preventDefault() // Prevents default link navigation when javascript is enabled
+    const fields = form.querySelectorAll('.input-text')
+    let data = {} // Form data for the server request
+    let errors = ['<h4>Oops...</h4>'] // Errors array
+
+    const button = form.querySelectorAll('.btn')[0]
+    button.classList.add('loading')
+    button.disabled = true
+
+    // Checks each input for errors. If error found it adds it to the errors array, else it adds it to the data object.
+    fields.forEach(inp => {
+        if(inp.value.length < 1) { // All inputs are required
+            errors.push('<p>' + inp.getAttribute('cleanTitle') + ' cannot be empty.</p>')
+        } else if(inp.name == 'email') { // If email checks format validation
+            const emailValidation = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+            emailValidation.test(inp.value) ? data[inp.name] = inp.value : errors.push('<p>Email invalid.</p>')
+        } else if(inp.name == 'name' && inp.value.split(' ').length < 2) { // Checks for first and last name inclusion.
+            errors.push('<p>Please inlcude both your first and last name.</p>')
+        } else { // If no errors it is added to data object.
+            data[inp.name] = inp.value
+        }
+    })
+    if(errors.length > 1) { // If errors send to user.
+        myAlert(errors.join(''), false, null, true)
+    } else {
+        // Sends 'POST' request to server to add user to mailchimp.
+        const req = await protectedServerRequest('https://' + window.location.hostname + '/api/signup', 'POST', data) // Sends data to server
+        const resp = JSON.parse(req) // Parsed server response.
+        // If response is good, sends confirmation message to user.
+        if(resp.ok) {
+            myAlert(
+                "<p>Hello " + fields[0].value.split(' ')[0] + "!</p><p>Thank you for signing up to revieve updates.</p>"
+            )
+        } else {
+            // If server response has an error it sends that to the user.
+            if(resp.resp[0]) {
+                myAlert(
+                    resp.resp[0].error_code == 'ERROR_CONTACT_EXISTS' ? 'Email address already added. Please use a different one.' : 'Error signing you up. Please try again later.',
+                    false, null, true
+                )
+            } else {
+                myAlert(resp.resp, false, null, true)
+            }
+            
+        }
+    }
+    button.classList.remove('loading')
+    button.disabled = false
+    
+}
 
 // Contact form validation
-const form = document.getElementById('contactForm')
-form ? form.addEventListener('submit', (event) => {
-    event.preventDefault()
+async function submitContact(event, form) {
+    event.preventDefault() // Prevents default link navigation when javascript is enabled
+
+    const button = form.querySelectorAll('.btn')[0]
+    button.classList.add('loading') // Adds loading animation to form button.
+    button.disabled = true
+
     const fields = form.querySelectorAll('.input-text')
 
     let errors = []
+    let data = {}
 
     fields.forEach(inp => {
         const emailValidation = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
         const cleanTitle = inp.getAttribute('cleanTitle')
-        inp.value.length < 1 ? errors.push(cleanTitle + ' cannot be empty.') : inp.name == 'email' ? emailValidation.test(inp.value) ? null : errors.push(cleanTitle + ' is invalid.') : null
+        if(inp.value.length < 1) {
+            errors.push(cleanTitle + ' cannot be empty.')
+        } else if(inp.name == 'email' && !emailValidation.test(inp.value)) {
+            errors.push(cleanTitle + ' is invalid.')
+        } else {
+            if(inp.name == 'subscribe') {
+                data[inp.name] = inp.checked
+            } else {
+                data[inp.name] = inp.value
+            }
+        }
     })
 
-    myAlert('<h3>Oops...</h4><hr>' + errors.map(err => {
-        return '<p>' + err + '</p>'
-    }).join(''))
-}) : null
+    if(errors.length > 0) {
+        myAlert('<h3>Oops...</h4><hr>' + errors.map(err => {
+            return '<p>' + err + '</p>'
+        }).join(''), false, null, true)
+    } else {
+        const res = await protectedServerRequest('https://' + window.location.hostname + '/api/contact', 'POST', data)// Sends data to server using reCAPTCHA
+        const resp = JSON.parse(res)
+        
+        if(resp.ok) {
+            myAlert('Your message had been sent!')
+        } else {
+            myAlert(resp.resp[0] ? 'Error sending your message. Please try again later' : resp.resp, false, null, true)
+        }
+        
+    }
+    button.classList.remove('loading')
+    button.disabled = false
+}
 
 // Detects mobile menu button press
 let mobileToggle = document.getElementById('mobileToggle')
@@ -118,9 +216,13 @@ function toggleMobileMenu(close) {
 }
 
 // Toggles my custom alert box.
-function myAlert(message, close) {
+function myAlert(message, close, event, err) {
+    event ? event.preventDefault() : null
     const myAlert = document.getElementById('myAlert')
     const text = document.getElementById('myAlertText')
+
+    myAlert.classList.remove('err')
+    err ? myAlert.classList.add('err') : null    
 
     if(close) {
         myAlert.classList.remove('alert')
@@ -132,10 +234,10 @@ function myAlert(message, close) {
 }
 
 // Closes custom alert box when "OK" button is pressed.
-document.getElementById('myAlertOK').addEventListener('click', () => {
-    myAlert(null, true)
+document.getElementById('myAlertOK').addEventListener('click', event => {
+    myAlert(null, true, event)
 })
 // Closes custom alert when user clicks outside the box.
-document.getElementById('myAlertBack').addEventListener('click', () => {
-    myAlert(null, true)
+document.getElementById('myAlertBack').addEventListener('click', event => {
+    myAlert(null, true, event)
 })

@@ -1,3 +1,6 @@
+const request = require('request')
+var nodemailer = require('nodemailer');
+
 function dataOps() {
     return (req, res, next) => {
         req.listCollections = (db, data) => {
@@ -36,4 +39,66 @@ function dataOps() {
     }
 }
 
-module.exports = { dataOps }
+function siteOps() {
+    return (req, res, next) => {
+        req.mailChimp = (data, dir, method) => {
+            return new Promise(resolve => {                
+                const mailOptions = {
+                    url: dir,
+                    method: method || "POST",
+                    headers: {
+                        Authorization: `auth ${process.env.MAILCHIMP_KEY}`
+                    },
+                    body: JSON.stringify(data)
+                }
+                request (mailOptions, (error, response, body) => {
+                    const bodyData = JSON.parse(body)
+                    if(error) {
+                        console.log(error)
+                        resolve({ok: false, resp: error})
+                    } else if(bodyData.errors) {
+                        if(bodyData.errors.length > 0) {
+                            console.log(bodyData.errors)
+                            resolve({ok: false, resp: bodyData.errors})
+                        } else {
+                            resolve({ok: true, resp: JSON.parse(response.body)})
+                        }
+                    } else {
+                        resolve({ok: true, resp: JSON.parse(response.body)})
+                    }
+                })
+            })
+        }
+        
+        next()
+    }
+}
+
+function emailOps() {
+    return (req, res, next) => {
+        req.sendMail = (options) => {
+            return new Promise(resolve => {
+                var transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: 'main.nrjohnson',
+                        pass: process.env.GMAIL_PASS
+                    }
+                });
+                transporter.sendMail(options, function(error, info){
+                    if (error) resolve({ok: false, resp: error})
+                    if(info.accepted.length > 0) {
+                        console.log('Email Sent to ' + options.to)
+                    } else {
+                        console.log('Email not sent.')
+                    }
+                    resolve({ok: true, resp: info})
+                });
+            })
+        }
+
+        next()
+    }
+}
+
+module.exports = { dataOps, siteOps, emailOps }

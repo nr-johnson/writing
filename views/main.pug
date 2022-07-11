@@ -6,14 +6,21 @@ html(lang="en")
         link(rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico")
         link(rel="stylesheet", href="/stylesheets/bootstrap.min.css")
         link(rel="stylesheet", href="/stylesheets/style.css")
+        script(src='https://www.google.com/recaptcha/api.js?render=6Lc-pd0gAAAAAOyqsmvkY10zycG3SCQKdelhMEsX' async)
         block head
             title= route ? 'NRJohnson | ' + route.substring(0,1).toUpperCase() + route.substring(1) : 'NRJohnson | Home'
     body
-        div#myAlert
+        -let clas = ''
+        if message
+            if message.err
+                -clas = 'err'
+        div#myAlert(class=clas)
             div#myAlertBack
             div(class='row my-alert-box')
                 div(class='col-12')
-                    p#myAlertText Alert!
+                    p#myAlertText
+                        if message
+                            | !{message.msg}
                 div(class='col-12 mt-2')
                     a#myAlertOK(href='#' class='btn w-100') OK
         div#mainBody(data-loc='/' + route)
@@ -24,8 +31,9 @@ html(lang="en")
                     div#content
                         if data
                             | !{data}
+                        if error
+                            p= error
             
-                include templates/footer.pug
-        
+                include templates/footer.pug      
         
         script(src='/script.js')

@@ -1,12 +1,9 @@
-block head
-    //- title NRJohnson | Contact
-
 section(class='row')
     div(class='col-12 text-center page-title')
         h1 Contact Me
 
 section(class='row mt-3')
-    form#contactForm(class='col-12' action='/forms/contact' method='POST')
+    form#contactForm(class='col-12' action='/forms/contact' method='POST' onsubmit='submitContact(event, this)')
         div(class='row')
             div(class='col-6')
                 input#firstName(type="text" cleanTitle='First Name' name='firstName' class='input-text w-100')
@@ -24,5 +21,9 @@ section(class='row mt-3')
                 textarea#message(name='message' cleanTitle='Message' class='input-text w-100')
                 label(for='message' class='form-label') Message
                     span  *
+            div(class='col-12 mt-2')
+                label(for='subscribe' class='form-label checkbox') Get Email Updates?
+                    input#subscribe(name='subscribe' cleanTitle='Subscribe' checked type='checkbox' class='input-text')
+                    span(class='box')
             div(class='col-12 col-md-2 ms-auto text-end mt-4')
                 button(class='btn w-100') Send

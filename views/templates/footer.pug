@@ -1,16 +1,22 @@
 footer#footer
     section(class='row px-sm-2 pt-3')
         div(class='col-12')
-            form#updatesForm(name='update' action='/forms/signup')
+            form#updatesForm(name='update' method='POST' action='/forms/signup' onsubmit='signUp(event, this)')
                 header
                     h4 Sign Up for Updates
                 div(class='row mt-1')
                     span(class='col-6 ps-0')
-                        input(type="text" name='name' value='' placeholder='First and Last Name' class='w-100 input-text sub')
+                        input(type="text" name='name' value='' cleanTitle='Name' placeholder='First and Last Name' class='w-100 input-text sub')
                     span(class='col-6 pe-0')
-                        input(type="email" name='email' value='' placeholder='Email Address' class='w-100 input-text sub')
+                        input(type="text" name='email' value='' cleanTitle='Email' placeholder='Email Address' class='w-100 input-text sub')
                 div(class='text-end pt-3')
                     button(class='btn btn-great btn-update') Submit
-    section(class='row px-sm-2 mt-4')
+    section(class='row px-sm-2 mt-3')
         div(class='col-12')
             p(class='copyright') © Copyright 2022 N.R. Johnson - All Rights Reserved
+        div(class='captcha-legal')
+            p This site is protected by reCAPTCHA and the Google 
+                a(href="https://policies.google.com/privacy") Privacy Policy
+                |  and 
+                a(href="https://policies.google.com/terms") Terms of Service
+                |  apply.
