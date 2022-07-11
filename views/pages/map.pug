@@ -4,3 +4,28 @@ block head
 section(class='row')
     div(class='col-12 text-center')
         h1 My Map
+    
+    div
+        section
+            p For now all my stories will be based in the same world. I have been casually worldbuilding for years in the hopes of writing a novel.
+            p Below is a map I created of the world. Not everything is included, but everything related to the story so far should be there.
+                br
+                span(class='note d-none d-md-block') Note: My map is currently only avaible on desktop devices.
+        p= mobile
+        if mobile
+            section(class='')
+                div(class='mobile-map-show')
+                    p(class='m-0') My interactive map is not available for mobile devices or small screens. Log in on a desktop computer to view.
+        else
+            section(class='')
+                div#mapDiv(style='')
+                    iframe#mapFrame(src="https://stories.nrjohnson.net/worldmap?frame=true" data-blockRight='© Copyright NRJohnson' title="NRJohnson's Interactive Map" onmouseover='disableScroll()' onmouseout='enableScroll()')
+                div(class='row')
+                    div(class='col-3 ms-auto text-end p-0 mt-3') 
+                        a(href='/worldmap' class='btn') View Full Screen
+                            figure(class='text-image ms-1')
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                                    <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+                                </svg>
+        

@@ -656,6 +656,21 @@ input[type="checkbox"]:checked ~ .box::after {
     opacity: 1;
     transition: .25s;
 }
+input[type="checkbox"]:checked ~ p {
+    opacity: 0;
+    pointer-events: none;
+    height: 0;
+    transition: .25s;
+}
+.checkbox p {
+    transition: .25s;
+}
+.note {
+    font-size: 9pt;
+}
+.note.caution {
+    color: var(--caution);
+}
 /* ^^ Forms */
 
 /* Stories Page */
@@ -755,6 +770,53 @@ input[type="checkbox"]:checked ~ .box::after {
     border-color: var(--caution);
 }
 /* ^^ Custom Alert Box */
+
+/* Map Page */
+#mapDiv {
+    width: 100%;
+    position: relative;
+    padding-bottom: 62%;
+    overflow: hidden;
+    border-radius: 2px;
+    box-shadow: 0 0 4px #00000099;
+}
+
+#mapFrame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.mobile-map-show {
+    position: relative;
+    width: 100%;
+    height: fit-content;
+    border-radius: 2px;
+    border: 2px solid var(--canvas);
+    box-shadow: 0 0 4px #00000080;
+    background-image: url('/images/map/Map Base.jpg');
+    background-size: cover;
+    background-position: center;
+    color: var(--canvas);
+    font-size: 11pt;
+    padding: .75rem;
+}
+.mobile-map-show p {
+    position: relative;
+    z-index: 1;
+}
+.mobile-map-show::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #00000060;
+}
+/* ^^ Map Page */
 
 
 /* Break Points */

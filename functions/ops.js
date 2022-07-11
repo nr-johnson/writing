@@ -1,5 +1,11 @@
 const request = require('request')
-var nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer');
+const chimp = require("mailchimp-marketing");
+
+chimp.setConfig({
+    apiKey: process.env.MAILCHIMP_KEY,
+    server: process.env.MAILCHIMP_SERVER_PREFIX,
+});
 
 function dataOps() {
     return (req, res, next) => {
@@ -42,47 +48,68 @@ function dataOps() {
 function siteOps() {
     return (req, res, next) => {
         // Adds or updates memeber in mailchimp.
-        req.mailChimp = (data, dir, method) => {
-            return new Promise(resolve => {
-                // const checkOptions = {
-                //     url: `${process.env.MAILCHIMP_API_URL}/lists/${process.env.MAILCHIMP_AUDIENCE_ID}/members/${data.members[0].email_address}`,
-                //     method: 'GET',
-                //     headers: {
-                //         Authorization: `auth ${process.env.MAILCHIMP_KEY}`
-                //     }
-                // }
-                // let status
-                // request(checkOptions, (error, response, body) => {
-                //     status = JSON.parse(body).status
-                // })
-                // status != 'subscribed' ? data.update_existing = true : null      
-                console.log(data)
-                const mailOptions = {
-                    url: dir,
-                    method: method || "POST",
-                    headers: {
-                        Authorization: `auth ${process.env.MAILCHIMP_KEY}`
-                    },
-                    body: JSON.stringify(data)
+        req.addUpdateChimp = data => {
+            return new Promise(async resolve => {
+                try {
+                    const response = await chimp.lists.setListMember(
+                        process.env.MAILCHIMP_AUDIENCE_ID,
+                        data.email_address,
+                        data
+                    );
+                    console.log(`Chimp Status: ${response.status}`)
+                    resolve(response.status == data.status ? {ok: true, resp: response} : {ok: false, resp: response})
+                } catch(err) {
+                    console.log(`Chimp Status: ${err.status}`)
+                    console.log(`Chimp Error Response: ${JSON.parse(err.response.text).detail}`)
+                    resolve({ok: false, resp: err})
                 }
-                request (mailOptions, (error, response, body) => {
-                    const bodyData = JSON.parse(body)
-                    if(error) {
-                        console.log(error)
-                        resolve({ok: false, resp: error})
-                    } else if(bodyData.errors) {
-                        if(bodyData.errors.length > 0) {
-                            console.log(bodyData.errors)
-                            resolve({ok: false, resp: bodyData.errors})
-                        } else {
-                            resolve({ok: true, resp: JSON.parse(response.body)})
-                        }
-                    } else {
-                        resolve({ok: true, resp: JSON.parse(response.body)})
-                    }
-                })
             })
+            
         }
+
+
+
+        // req.mailChimp = (data, dir, method) => {
+        //     return new Promise(resolve => {
+        //         // const checkOptions = {
+        //         //     url: `${process.env.MAILCHIMP_API_URL}/lists/${process.env.MAILCHIMP_AUDIENCE_ID}/members/${data.members[0].email_address}`,
+        //         //     method: 'GET',
+        //         //     headers: {
+        //         //         Authorization: `auth ${process.env.MAILCHIMP_KEY}`
+        //         //     }
+        //         // }
+        //         // let status
+        //         // request(checkOptions, (error, response, body) => {
+        //         //     status = JSON.parse(body).status
+        //         // })
+        //         // status != 'subscribed' ? data.update_existing = true : null      
+        //         console.log(data)
+        //         const mailOptions = {
+        //             url: dir,
+        //             method: method || "POST",
+        //             headers: {
+        //                 Authorization: `auth ${process.env.MAILCHIMP_KEY}`
+        //             },
+        //             body: JSON.stringify(data)
+        //         }
+        //         request (mailOptions, (error, response, body) => {
+        //             const bodyData = JSON.parse(body)
+        //             if(error) {
+        //                 console.log(error)
+        //                 resolve({ok: false, resp: error})
+        //             } else if(bodyData.errors) {
+        //                 if(bodyData.errors.length > 0) {
+        //                     console.log(bodyData.errors)
+        //                     resolve({ok: false, resp: bodyData.errors})
+        //                 } else {
+        //                     resolve({ok: true, resp: JSON.parse(response.body)})
+        //                 }
+        //             } else {
+        //                 resolve({ok: true, resp: JSON.parse(response.body)})
+        //             }
+        //         })
+        //     })
+        // }
         
         next()
     }

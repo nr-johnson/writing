@@ -28,7 +28,10 @@ router.get('/stories', async (req, res) => {
 
 // Gets Map page
 router.get('/map', (req, res) => {
-    res.render('pages/map')
+    
+    res.render('pages/map', {
+        mobile: req.device.type
+    })
 })
 
 // Gets Contect Me page
@@ -41,24 +44,20 @@ router.post('/contact', (req, res) => {
     captchaUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${req.body.token}`;
     request(captchaUrl, async (error, response, body) => {
         const score = JSON.parse(body).score
+        console.log(`Captcha score: ${score}`)
         if(score >= 0.4) {
-            console.log(`Captcha score: ${score}`)
-            const chimpData = {
-                members: [
+            const data = {
+                email_address: req.body.email,
+                tags: ['Contact Form'],
+                merge_fields: 
                     {
-                        email_address: req.body.email,
-                        tags: ['Contact Form'],
-                        merge_fields: 
-                            {
-                                FNAME: req.body.firstName,
-                                LNAME: req.body.lastName
-                            },
-                        interests: {
-                            '8bd27fd3aa': true
-                        },
-                        status: req.body.subscribe ? 'subscribed' : 'unsubscribed'
-                    }
-                ]
+                        FNAME: req.body.firstName,
+                        LNAME: req.body.lastName
+                    },
+                interests: {
+                    '8bd27fd3aa': true
+                },
+                status: req.body.subscribe ? 'subscribed' : 'unsubscribed'
             }
             var mailOptions = {
                 from: 'Stories - NRJohnson <contact@nrjohnson.net>',
@@ -70,7 +69,7 @@ router.post('/contact', (req, res) => {
                     <p>${req.body.message}</p>`
             };
             const mailSent = await req.sendMail(mailOptions)
-            await req.mailChimp(chimpData, `${process.env.MAILCHIMP_API_URL}/lists/${process.env.MAILCHIMP_AUDIENCE_ID}`)
+            await req.addUpdateChimp(data)
             res.send(mailSent)
         } else {
             res.send({ok: false, resp: 'Message not sent. Captcha score too low.'})
@@ -86,24 +85,19 @@ router.post('/signup', async (req, res) => {
         console.log(`Captcha score: ${score}`)
         if(score >= 0.4) {
             const data = {
-                members: [
+                email_address: req.body.email,
+                tags: ['Subscribe Form'],
+                merge_fields: 
                     {
-                        email_address: req.body.email,
-                        tags: ['Subscribe Form'],
-                        merge_fields: 
-                            {
-                                FNAME: req.body.name.split(' ')[0],
-                                LNAME: req.body.name.split(' ')[1]
-                            },
-                        interests: {
-                            '8bd27fd3aa': true
-                        },
-                        status: 'subscribed'
-                    }
-                ],
-                update_existing: true
+                        FNAME: req.body.name.split(' ')[0],
+                        LNAME: req.body.name.split(' ')[1]
+                    },
+                interests: {
+                    '8bd27fd3aa': true
+                },
+                status: 'subscribed'
             }
-            let submit = await req.mailChimp(data, `${process.env.MAILCHIMP_API_URL}/lists/${process.env.MAILCHIMP_AUDIENCE_ID}/members/${req.body.email}`, 'PUT')
+            let submit = await req.addUpdateChimp(data)
             res.send(submit)
         } else {
             res.send({ok: false, resp: 'Captcha score too low.'})

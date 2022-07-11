@@ -9,7 +9,7 @@ html(lang="en")
         script(src='https://www.google.com/recaptcha/api.js?render=6Lc-pd0gAAAAAOyqsmvkY10zycG3SCQKdelhMEsX' async)
         block head
             title= route ? 'NRJohnson | ' + route.substring(0,1).toUpperCase() + route.substring(1) : 'NRJohnson | Home'
-    body
+    body#main
         -let clas = ''
         if message
             if message.err
@@ -36,4 +36,4 @@ html(lang="en")
             
                 include templates/footer.pug      
         
-        script(src='/script.js')
+        script(src='/scripts/script.js')
