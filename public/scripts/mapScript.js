@@ -879,36 +879,36 @@ async function galSlide(left) {
         }
     }
 
-    images[currSlide].classList.remove('hideL')
-    images[currSlide].classList.remove('showL')
-    images[currSlide].classList.remove('hideR')
-    images[currSlide].classList.remove('showR')
-    images[currSlide].classList.remove('show')
-    images[currSlide].classList.remove('hide')
+    images[currSlide].classList = 'infoImageDiv'
+
     caption.innerHTML = ""
+
     if(left) {
         images[currSlide].classList.add('hideL')
+        
         if(currSlide == 0) {
             currSlide = images.length - 1
         } else {
             currSlide -= 1
         }
-        images[currSlide].classList.remove('hideL')
-        images[currSlide].classList.remove('hideR')
-        images[currSlide].classList.remove('hide')
+
+        images[currSlide].classList = 'infoImageDiv'
+
         images[currSlide].classList.add('showL')
     } else {
         images[currSlide].classList.add('hideR')
+        
         if(currSlide == images.length - 1) {
             currSlide = 0
         } else {
             currSlide += 1
+        
         }
-        images[currSlide].classList.remove('hideL')
-        images[currSlide].classList.remove('hideR')
-        images[currSlide].classList.remove('hide')
+        images[currSlide].classList = 'infoImageDiv'
+
         images[currSlide].classList.add('showR')
     }
+    
     caption.innerHTML = images[currSlide].children[1].innerHTML
 }
 
@@ -936,7 +936,9 @@ function sizeUp(bar) {
         pos1 = pos2 - e.clientY;
         pos2 = e.clientY;
 
-        footer.style.height = (parseInt(footer.style.height) + pos1) + 'px'
+        const rect = footer.getBoundingClientRect()
+
+        footer.style.height = (rect.height + pos1) + 'px'
         info.style.height = ((infoBox.offsetHeight - info.offsetTop) - footer.offsetHeight) - 6 + 'px'
 
     }

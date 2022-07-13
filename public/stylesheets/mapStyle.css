@@ -638,7 +638,7 @@ a:hover {
     animation-duration: .5s;
 }
 
-@keyframes hideImageL {
+@keyframes hideImageR {
     from {opacity: 1; transform: translateX(0); visibility: visible;}
     to {opacity: 0; transform: translateX(120%); visibility: hidden;}
 }
