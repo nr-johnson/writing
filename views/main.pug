@@ -3,18 +3,27 @@ html(lang="en")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        
         link(rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico")
         link(rel="stylesheet", href="/stylesheets/bootstrap.min.css")
         link(rel="stylesheet", href="/stylesheets/style.css")
         script(src='https://www.google.com/recaptcha/api.js?render=6Lc-pd0gAAAAAOyqsmvkY10zycG3SCQKdelhMEsX' async)
+        if data[1]
+            | !{data[0]}
+        
         block head
-            title= route ? 'NRJohnson | ' + route.substring(0,1).toUpperCase() + route.substring(1) : 'NRJohnson | Home'
+            if status == 200
+                title= route ? 'NRJohnson | ' + route.substring(0,1).toUpperCase() + route.substring(1) : 'NRJohnson | Home'
+            else 
+                title= status
     body#main
         -let clas = ''
+        -let msg = null
         if message
+            -msg = message.msg
             if message.err
-                -clas = 'err'
-        div#myAlert(class=clas)
+                -clas = clas + ' err'
+        div#myAlert(class=clas data-message=msg)
             div#myAlertBack
             div(class='row my-alert-box')
                 div(class='col-12')
@@ -30,10 +39,13 @@ html(lang="en")
                 div#body
                     div#content
                         if data
-                            | !{data}
+                            if data[1]
+                                | !{data[1]}
+                            else
+                                | !{data[0]}
                         if error
                             p= error
             
-                include templates/footer.pug      
-        
+                include templates/footer.pug
+
         script(src='/scripts/script.js')

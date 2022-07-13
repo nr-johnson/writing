@@ -1,6 +1,4 @@
 const router = require('express').Router()
-const { response } = require('express')
-const request = require('request')
 
 // Submits sign up for updates form when front end javascript is disabled.
 router.post('/signup', async (req, res) => {

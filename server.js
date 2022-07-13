@@ -7,7 +7,6 @@ const axios = require('axios');
 const expressSession = require('express-session');
 const MongoStore = require('connect-mongo')
 const useragent = require('express-useragent');
-var device = require('express-device');
 const request = require('request')
 const connectMongo = require('./functions/mongo-connection') // my middleware to connect to mongodb
 const ops = require('./functions/ops') // my middleware functions to get data from mongodb
@@ -28,23 +27,29 @@ app.use(expressSession({
     resave: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),  
 }))
-app.use(device.capture());
 app.use(useragent.express());
 // Establishes connection with mongodb.
 app.use(connectMongo(process.env.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true}))
-app.use(ops.dataOps(), ops.siteOps(), ops.emailOps()) // My custom functions for getting data from mongodb.
+app.use(ops.dataOps(), ops.siteOps()) // My custom functions.
 
-// All pages render the same "main.pug" file.
-// Data for each page is gathered from the "api" routes using axios then sent as data to the page.
+app.use((req, res, next) => {
+    req.dev = app.get('env') === 'development'
+    next()
+})
+
+// All pages except the fullpage map render the same "main.pug" file.
+// Data for each page is gathered from the "api" routes using 'request' then sent as data to the page.
 // This is done because the site is a single page app, data is gathered and added to the page rather than a new page being loaded.
 const apiRoutes = require('./routes/api') // "api" routes. Data that is added to the "main.pug" page dynamically.
-const formRoutes = require('./routes/forms')
+const formRoutes = require('./routes/forms') // Used to submit forms when javascript is not working.
 app.use('/api', apiRoutes)
 app.use('/forms', formRoutes)
 
+// Loads the fullscreen map and the content in the iframe.
 app.get('/worldmap', async (req, res) => {
+    // If user is coming from a mobile device they are redirected to the '/map' page with a message.
     if(req.useragent.isMobile) {
-        req.session.message = 'Sorry but my interactive map is only available on desktop devices.'
+        req.session.message = {err: false, msg: 'Sorry but my interactive map is only available on desktop devices.'}
         res.redirect('/map')
         return
     }
@@ -53,7 +58,7 @@ app.get('/worldmap', async (req, res) => {
     res.render('map/map', {
         info: dots,
         public: true,
-        frame: req.query.frame ? true : false
+        frame: req.query.frame ? true : false // Hides a button if loaded through an iframe.
     })
 })
 
@@ -61,39 +66,31 @@ app.get('/worldmap', async (req, res) => {
 app.get(['/','/:page'], async (req, res, next) => {
     // the page param is used to determin what content to load from the "api" routes.
     const route = req.params.page || '' // if blank it grabs the index page.
-    const url = `https://${req.hostname}/api/${route}` // axios url string.
-    // This is axios grabbing the page data from the "api" routes and adding the response to a variable.
-
+    const url = `https://${req.hostname}/api/${route}?mobile=${req.useragent.isMobile}` // axios url string.
+    // This is 'request' grabbing the page data from the "api" routes and adding the response to a variable.
+    
     const msg = req.session.message
     req.session.message = null
 
     const err = req.session.error
     req.session.error = null
 
-    const options = {
-        url: url
-    }
+    // Gets page data.
+    request(url, async (error, response, body) => {
+        // Body will be split into two sections. This is identified by an 'hr' element with the a 'sep' class.
+        // The first part is the head data, the second is the body data.
+        const sep = body.split("<hr class='sep'>")
 
-    request(options, async (error, response, body) => {
-       // Renders the "main.pug" file and sends the data gathered from axios.
+        // Renders the "main.pug" file and sends the data gathered from 'request'.
         res.render('main', {
-            data: body,
+            data: sep,
             route: route,
             message: msg,
             error: err,
-            mobile: req.useragent.isMobile
+            mobile: req.useragent.isMobile,
+            status: response.statusCode
         })
     })
-    
-    // const data = await axios.get(url).then(response => {
-    //     return response.data
-    // }).catch(error => {
-    //     console.log(error.status)
-    //     return error.response
-    // });
-    
-
-    
 })
 
 // Server ---

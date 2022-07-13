@@ -1,3 +1,35 @@
+const alertBox = document.getElementById('myAlert')
+alertBox.addEventListener('load', alertBox.getAttribute('data-message') ? myAlert(alertBox.getAttribute('data-message')) : null)
+
+// Toggles my custom alert box.
+function myAlert(message, close, event, err) {
+    event ? event.preventDefault() : null // Prevents link navigation if link is used.
+    const myAlert = document.getElementById('myAlert')
+    const text = document.getElementById('myAlertText') // Div containing alert box text
+
+    // Removes errors which will be re-added if it is an error.
+    myAlert.classList.remove('err')
+    err ? myAlert.classList.add('err') : null    
+
+    // If the 'close' variable is true it closes the box, otherwise it opens it.
+    if(close) {
+        myAlert.classList.remove('alert')
+        window.setTimeout(() => {text.innerHTML = ''}, 300) // Prevent awekward collapse of box as it fades.
+    } else if(message) {
+        message ? text.innerHTML = message : null;
+        myAlert.classList.add('alert')
+    }
+}
+
+// Closes custom alert box when "OK" button is pressed.
+document.getElementById('myAlertOK').addEventListener('click', event => {
+    myAlert(null, true, event)
+})
+// Closes custom alert when user clicks outside the box.
+document.getElementById('myAlertBack').addEventListener('click', event => {
+    myAlert(null, true, event)
+})
+
 // Highjacks the functionality of all links so the data can be loaded without loading a new page (discount react).
 document.querySelectorAll('.nav-redir').forEach(link => {
     link.addEventListener('click', (event) => {
@@ -16,6 +48,7 @@ async function pageChange(event, route) {
     }
 
     const content = document.getElementById('content') // Div for data to be loaded into.
+    const head = document.getElementsByTagName('head')[0] // Document 'head' tag.
     // Sets attribute on header that is used to style nav indicator
     document.getElementById('mainBody').setAttribute('data-loc', route) 
 
@@ -23,11 +56,20 @@ async function pageChange(event, route) {
 
     content.classList.add('fade') // Hides pages content
     content.innerHTML = '' // Deletes Page Content
+    console.log(head.innerHTML)
+    // Removes elements from the head that are specfic to the previosly loaded page.
+    head.querySelectorAll('.var-head').forEach(tag => {
+        tag.parentNode.removeChild(tag)
+    })
 
     const url = 'https://' + window.location.hostname + '/api' + route
     const data = await serverRequest(url, 'GET') // Gets data from server
+
+    // Seperates content into head elements and body elements.
+    const sep = data.split("<hr class='sep'>")
     
-    content.innerHTML = data // Adds data to page
+    if(sep[1]) head.innerHTML = head.innerHTML + sep[0]
+    content.innerHTML = sep[1] ? sep[1] : sep[0] // Adds data to page
     content.classList.remove('fade') // Shows page content
 
     
@@ -40,6 +82,7 @@ async function pageChange(event, route) {
     addToHistory(route)
 }
 
+// Calls the 'serverRequest' function after generating and adding a capthca token.
 function protectedServerRequest(url, method, data) {
     return new Promise(resolve => {
         grecaptcha.ready(function() {
@@ -100,6 +143,7 @@ async function signUp(event, form) {
     let data = {} // Form data for the server request
     let errors = ['<h4>Oops...</h4>'] // Errors array
 
+    // Adds loading animation to button
     const button = form.querySelectorAll('.btn')[0]
     button.classList.add('loading')
     button.disabled = true
@@ -134,6 +178,7 @@ async function signUp(event, form) {
             
         }
     }
+    // Removes button loading animation
     button.classList.remove('loading')
     button.disabled = false
     
@@ -152,27 +197,30 @@ async function submitContact(event, form) {
     let errors = []
     let data = {}
 
+    // Validates each form field. If there is an error it adds that error to the array, else it adds the key-value to the data object.
     fields.forEach(inp => {
         const emailValidation = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-        const cleanTitle = inp.getAttribute('cleanTitle')
-        if(inp.value.length < 1) {
+        const cleanTitle = inp.getAttribute('cleanTitle') // Attribute stored on the input element to provide a good looking name for the user.
+        if(inp.value.length < 1) { // Each input is required and cannot be empty.
             errors.push(cleanTitle + ' cannot be empty.')
-        } else if(inp.name == 'email' && !emailValidation.test(inp.value)) {
+        } else if(inp.name == 'email' && !emailValidation.test(inp.value)) { // If email check against validation regex.
             errors.push(cleanTitle + ' is invalid.')
-        } else {
-            if(inp.name == 'subscribe') {
-                data[inp.name] = inp.checked
+        } else { // No errors, add to 'data'
+            if(inp.name == 'subscribe') { // Checkboxes return 'on', so if checkbox set as boolean.
+                data[inp.name] = inp.checked 
             } else {
                 data[inp.name] = inp.value
             }
         }
     })
 
+    // If 'errors' array is not empty, send error to user.
     if(errors.length > 0) {
         myAlert('<h3>Oops...</h4><hr>' + errors.map(err => {
             return '<p>' + err + '</p>'
         }).join(''), false, null, true)
     } else {
+        // Send data to server through with captcha.
         const res = await protectedServerRequest('https://' + window.location.hostname + '/api/contact', 'POST', data)// Sends data to server using reCAPTCHA
         const resp = JSON.parse(res)
         
@@ -183,6 +231,7 @@ async function submitContact(event, form) {
         }
         
     }
+    // Removes button loading animation
     button.classList.remove('loading')
     button.disabled = false
 }
@@ -207,33 +256,6 @@ function toggleMobileMenu(close) {
     const main = document.getElementById('mainBody')
     close ? main.classList.remove('mobile-toggled') : main.classList.toggle('mobile-toggled')
 }
-
-// Toggles my custom alert box.
-function myAlert(message, close, event, err) {
-    event ? event.preventDefault() : null
-    const myAlert = document.getElementById('myAlert')
-    const text = document.getElementById('myAlertText')
-
-    myAlert.classList.remove('err')
-    err ? myAlert.classList.add('err') : null    
-
-    if(close) {
-        myAlert.classList.remove('alert')
-        window.setTimeout(() => {text.innerHTML = ''}, 300) // Prevent awekward collapse of box as it fades.
-    } else if(message) {
-        text.innerHTML = message
-        myAlert.classList.add('alert')
-    }
-}
-
-// Closes custom alert box when "OK" button is pressed.
-document.getElementById('myAlertOK').addEventListener('click', event => {
-    myAlert(null, true, event)
-})
-// Closes custom alert when user clicks outside the box.
-document.getElementById('myAlertBack').addEventListener('click', event => {
-    myAlert(null, true, event)
-})
 
 // Stops scrolling when interacting with the map.
 function disableScroll() {
