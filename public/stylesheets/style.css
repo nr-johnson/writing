@@ -662,6 +662,7 @@ input[type="checkbox"]:checked ~ .box::after {
     transition: .25s;
 }
 input[type="checkbox"]:checked ~ p {
+    position: relative;
     opacity: 0;
     pointer-events: none;
     height: 0;
@@ -676,6 +677,9 @@ input[type="checkbox"]:checked ~ p {
 }
 .note.caution {
     color: var(--caution);
+}
+#contactForm label {
+    font-size: 10pt;;
 }
 /* ^^ Forms */
 

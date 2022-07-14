@@ -17,24 +17,24 @@ section(class='row mt-3')
     form#contactForm(class='col-12' action='/forms/contact' method='POST' onsubmit='submitContact(event, this)')
         div(class='row')
             div(class='col-6')
-                input#firstName(type="text" cleanTitle='First Name' name='firstName' class='input-text w-100')
+                input#firstName(type="text" data-cleanTitle='First Name' name='firstName' class='input-text w-100')
                 label(for='firstName' class='form-label') First Name
                     span  *
             div(class='col-6')
-                input#lastName(type="text" cleanTitle='Last Name' name='lastName' class='input-text w-100')
+                input#lastName(type="text" data-cleanTitle='Last Name' name='lastName' class='input-text w-100')
                 label(for='lastName' class='form-label') Last Name
                     span  *
             div(class='col-12 mt-2')
-                input#email(type="text" cleanTitle='Email' name='email' class='input-text w-100')
+                input#email(type="text" data-cleanTitle='Email' name='email' class='input-text w-100')
                 label(for='email' class='form-label') Email
                     span  *
             div(class='col-12 mt-2')
-                textarea#message(name='message' cleanTitle='Message' class='input-text w-100')
+                textarea#message(name='message' data-cleanTitle='Message' class='input-text w-100')
                 label(for='message' class='form-label') Message
                     span  *
             div(class='col-12 mt-2')
                 label(for='subscribe' class='form-label checkbox') Get Email Updates?
-                    input#subscribe(name='subscribe' cleanTitle='Subscribe' checked type='checkbox')
+                    input#subscribe(name='subscribe' data-cleanTitle='Subscribe' checked type='checkbox')
                     span(class='box')
                     p(class='note caution') Note: If you are already receiving email updates, unchecking this box will unsubscribe you.
             div(class='col-12 col-md-2 ms-auto text-end mt-4')

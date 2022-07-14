@@ -154,7 +154,7 @@ async function signUp(event, form) {
     // Checks each input for errors. If error found it adds it to the errors array, else it adds it to the data object.
     fields.forEach(inp => {
         if(inp.value.length < 1) { // All inputs are required
-            errors.push('<p>' + inp.getAttribute('cleanTitle') + ' cannot be empty.</p>')
+            errors.push('<p>' + inp.getAttribute('data-cleanTitle') + ' cannot be empty.</p>')
         } else if(inp.name == 'email') { // If email checks format validation
             const emailValidation = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
             emailValidation.test(inp.value) ? data[inp.name] = inp.value : errors.push('<p>Email invalid.</p>')
@@ -203,7 +203,7 @@ async function submitContact(event, form) {
     // Validates each form field. If there is an error it adds that error to the array, else it adds the key-value to the data object.
     fields.forEach(inp => {
         const emailValidation = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-        const cleanTitle = inp.getAttribute('cleanTitle') // Attribute stored on the input element to provide a good looking name for the user.
+        const cleanTitle = inp.getAttribute('data-cleanTitle') // Attribute stored on the input element to provide a good looking name for the user.
         if(inp.value.length < 1) { // Each input is required and cannot be empty.
             errors.push(cleanTitle + ' cannot be empty.')
         } else if(inp.name == 'email' && !emailValidation.test(inp.value)) { // If email check against validation regex.
@@ -265,6 +265,8 @@ function disableScroll() {
     const body = document.getElementById('main')
     const bodWidth = body.offsetWidth
     body.style.overflow = 'hidden'
+
+    // This prevents the glitchy effect from the window resizing when the scroll bar is removed.
     if(body.offsetWidth > bodWidth) {
         body.style.paddingRight = (body.offsetWidth - bodWidth) + 'px'
     }
@@ -275,4 +277,5 @@ function enableScroll() {
     const body = document.getElementById('main')
     body.style.overflow = 'unset'
     body.style.paddingRight = 'unset'
+    body.style.overflowX = 'hidden'
 }
