@@ -56,7 +56,6 @@ async function pageChange(event, route) {
 
     content.classList.add('fade') // Hides pages content
     content.innerHTML = '' // Deletes Page Content
-    console.log(head.innerHTML)
     // Removes elements from the head that are specfic to the previosly loaded page.
     head.querySelectorAll('.var-head').forEach(tag => {
         tag.parentNode.removeChild(tag)
@@ -67,8 +66,12 @@ async function pageChange(event, route) {
 
     // Seperates content into head elements and body elements.
     const sep = data.split("<hr class='sep'>")
+    const holdiv = document.createElement('div')
+    holdiv.innerHTML = sep[1] ? sep[0] : ''
     
-    if(sep[1]) head.innerHTML = head.innerHTML + sep[0]
+    while(holdiv.children.length > 0) {
+        head.append(holdiv.children[0])
+    }
     content.innerHTML = sep[1] ? sep[1] : sep[0] // Adds data to page
     content.classList.remove('fade') // Shows page content
 
