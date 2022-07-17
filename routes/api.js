@@ -4,6 +4,7 @@
 const express = require('express')
 const router = express.Router()
 const request = require('request')
+const {ObjectId} = require('mongodb')
 
 // Get content for home page
 router.get('/', async (req, res) => {
@@ -114,6 +115,18 @@ router.post('/signup', async (req, res) => {
     
 })
 
+router.get('/about', async (req, res) => {
+    const id = req.query.id
+    const route = req.query.route
+
+    const story = await req.findItem('writing', 'stories', {_id: ObjectId(id)})
+
+    req.session.message = {err: false, msg: `<h4>About ${story[0].title}</h4>${story[0].about}`}
+
+    res.redirect(`${route}#myAlert`)
+
+})
+
 // Error page
 router.get('/error', (req, res) => {
     const err = req.session.error
@@ -131,5 +144,7 @@ router.get('/:page', (req, res) => {
         error: req.dev ? err : {}
     })
 })
+
+
 
 module.exports = router

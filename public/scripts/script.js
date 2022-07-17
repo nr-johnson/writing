@@ -83,6 +83,39 @@ async function pageChange(event, route) {
 
     // Adds navigation to browser history.
     addToHistory(route)
+
+    if(route == '/map') loadFrame() // Loads map iframe if page loaded is the map page.
+}
+
+// This loads in the iframe containing the map. This is done using JS because it won't function without it. So a message will be displayed by default if this function is not called.
+function loadFrame() {
+    const div = document.getElementById('map')
+    const button = document.getElementById('mapButton')
+    const frame = document.createElement('iframe')
+    const newDiv = document.createElement('div')
+
+    /*
+        Creates a new div and a new iframe. Sets the appropriate attributes for both.
+        It clears the content of the target parent div,
+        Appends the iframe to the new div, then appends the new div to the parent div.
+    */
+
+    newDiv.id = 'mapDiv'
+
+    frame.id = 'mapFrame'
+    frame.src = 'https://stories.nrjohnson.net/worldmap?frame=true'
+    frame.title = "NRJohnson's Interactive Map"
+    frame.setAttribute('data-blockRight', '© Copyright NRJohnson')
+
+    div.innerHTML = ''
+    newDiv.appendChild(frame)
+    div.appendChild(newDiv)
+
+    button.classList.remove('d-none')
+
+    //- Event Listeners to disable and enable scroll when hovering over the map.
+    frame.addEventListener('mouseover', () => {disableScroll()})
+    frame.addEventListener('mouseout', () => {enableScroll()})
 }
 
 // Calls the 'serverRequest' function after generating and adding a capthca token.

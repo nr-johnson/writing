@@ -28,9 +28,10 @@ section(class='row')
                 p(class='m-0') My interactive map is not available for mobile devices or small screens. Log in on a desktop computer to view.
         if !mobile
             section(class='d-none d-md-block')
-                div#mapDiv(style='')
-                    iframe#mapFrame(src="https://stories.nrjohnson.net/worldmap?frame=true" data-blockRight='© Copyright NRJohnson' title="NRJohnson's Interactive Map" onmouseover='disableScroll()' onmouseout='enableScroll()')
-                div(class='row')
+                div#map
+                    div(class='mobile-map-show')
+                        p(class='m-0') Javascript is required for my Interactive map to function
+                div#mapButton(class='row d-none')
                     div(class='col-3 ms-auto text-end p-0 mt-3') 
                         a(href='/worldmap' target='_blank' class='btn btn-great') View Full Size
                             figure(class='text-image ms-1')
@@ -38,4 +39,35 @@ section(class='row')
                                     <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
                                     <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
                                 </svg>
-        
+script.
+    //- This loads in the iframe containing the map. This is done using JS because it won't function without it. So a message will be displayed by default if this function is not called.
+    loadFrame()
+    function loadFrame() {
+        const div = document.getElementById('map')
+        const button = document.getElementById('mapButton')
+        const frame = document.createElement('iframe')
+        const newDiv = document.createElement('div')
+
+        /*
+            Creates a new div and a new iframe. Sets the appropriate attributes for both.
+            It clears the content of the target parent div,
+            Appends the iframe to the new div, then appends the new div to the parent div.
+        */
+
+        newDiv.id = 'mapDiv'
+
+        frame.id = 'mapFrame'
+        frame.src = 'https://stories.nrjohnson.net/worldmap?frame=true'
+        frame.title = "NRJohnson's Interactive Map"
+        frame.setAttribute('data-blockRight', '© Copyright NRJohnson')
+
+        div.innerHTML = ''
+        newDiv.appendChild(frame)
+        div.appendChild(newDiv)
+
+        button.classList.remove('d-none')
+
+        //- Event Listeners to disable and enable scroll when hovering over the map.
+        frame.addEventListener('mouseover', () => {disableScroll()})
+        frame.addEventListener('mouseout', () => {enableScroll()})
+    }

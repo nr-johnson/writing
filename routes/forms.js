@@ -52,7 +52,8 @@ router.post('/signup', async (req, res) => {
 })
 
 router.post('/contact', async (req, res) => {
-    req.session.message = {err: false, msg: '<p>Form Submitted!</p>'}
+    req.session.message = {err: true, msg: '<p>Javascript is required to submit contact form.</p>'}
+    
     res.redirect('/contact#myAlert')
 })
 
