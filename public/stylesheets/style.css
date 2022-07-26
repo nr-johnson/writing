@@ -33,6 +33,7 @@
 
 html {
     scroll-behavior: smooth;
+    font-display: swap;
 }
 
 body {
@@ -159,6 +160,8 @@ hr.canvas {
     transform: translateX(-50%);
 }
 #brand a figure img {
+    width: 2rem;
+    width: 100%;
     border-radius: 50%;
     border: .2rem solid var(--accent);
 }
@@ -260,6 +263,10 @@ hr.canvas {
     height: 1.5rem;
     width: 1rem;
     padding-bottom: .5rem;
+}
+.social-link-img img {
+    width: 1rem;
+    width: 100%;
 }
 /* ^^ HEADER */
 
@@ -841,6 +848,7 @@ input[type="checkbox"]:checked ~ p {
     bottom: 0;
     background-color: #00000060;
 }
+
 /* ^^ Map Page */
 
 
