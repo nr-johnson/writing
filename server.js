@@ -8,10 +8,16 @@ const expressSession = require('express-session');
 const MongoStore = require('connect-mongo')
 const useragent = require('express-useragent');
 const request = require('request')
-const connectMongo = require('./functions/mongo-connection') // my middleware to connect to mongodb
 const ops = require('./functions/ops') // my middleware functions to get data from mongodb
 
 const app = express()
+
+app.use((req, res, next) => {
+    req.client = axios.create({
+        baseURL: process.env.API_URL
+    })
+    next()
+})
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -28,9 +34,7 @@ app.use(expressSession({
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),  
 }))
 app.use(useragent.express());
-// Establishes connection with mongodb.
-app.use(connectMongo(process.env.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true}))
-app.use(ops.dataOps(), ops.siteOps()) // My custom functions.
+app.use(ops.siteOps()) // My custom functions.
 
 app.use((req, res, next) => {
     req.dev = app.get('env') === 'development'
@@ -54,12 +58,15 @@ app.get('/worldmap', async (req, res) => {
         return
     }
 
-    const dots = await req.findMany('map', 'public', {})
-    res.render('map/map', {
-        info: dots,
-        public: true,
-        frame: req.query.frame ? true : false // Hides a button if loaded through an iframe.
+    // const dots = await req.findMany('map', 'public', {})
+    req.client.get('/map/public').then(resp => {
+        res.render('map/map', {
+            info: resp.data,
+            public: true,
+            frame: req.query.frame ? true : false // Hides a button if loaded through an iframe.
+        })
     })
+    
 })
 
 // All requests that don't start with "/api", "/forms", or "/worldmap" land here.

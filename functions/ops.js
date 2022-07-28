@@ -7,27 +7,6 @@ chimp.setConfig({
     server: process.env.MAILCHIMP_SERVER_PREFIX,
 });
 
-// MongoDB Functions
-function dataOps() {
-    return (req, res, next) => {
-        // Gets a single item from the a database collection.
-        req.findItem = (db, col, data, index) => {
-            return new Promise(resolve => {
-                if(index) resolve(req.mongo.db(db).collection(col).find(data).collation(index).limit(1).toArray())
-                else resolve(req.mongo.db(db).collection(col).find(data).limit(1).toArray())
-            })
-        }
-        // Gets all items from a database collection that match parameters provided in the 'data' param.
-        req.findMany = (db, col, data) => {
-            return new Promise(resolve => {
-                data = data || {}
-                resolve(req.mongo.db(db).collection(col).find(data).toArray())
-            })
-        }
-        next()
-    }
-}
-
 // Functions that arent's related to MongoDB
 function siteOps() {
     return (req, res, next) => {
@@ -76,4 +55,4 @@ function siteOps() {
     }
 }
 
-module.exports = { dataOps, siteOps }
+module.exports = { siteOps }
