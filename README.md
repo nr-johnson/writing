@@ -1,5 +1,6 @@
 # Writing Blog Webpage
 This is a Node.js based webpage meant to share information about my creative writing.
+[View Live Site](https://stories.nrjohnson.net/ "Site for App")
 
 ***
 
