@@ -24,4 +24,4 @@ MailChimp's Node.JS Express API is used to add subscribers to a mailing list.
 
 ## You may use my code if you wish
 
-If you find my work helpful, feel free to use it. Just keep in mind that the content displayed on my site (stories, map, character/location information, etc. are copyrighted).
+If you find my work helpful, feel free to use it. Just keep in mind that the content displayed on my site (stories, map, character/location information, etc.) is copyrighted.
