@@ -15,6 +15,10 @@
     display: none;
 }
 
+.copyright {
+    margin-top: 8px;
+}
+
 .captcha-legal p, .copyright p {
     font-size: 8pt;
     opacity: .7;
@@ -530,7 +534,7 @@ hr.canvas {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 13rem;
+    height: 13.5rem;
     background-color: var(--accent);
     border-top: 4px solid var(--accent);
     color: var(--canvas);
@@ -947,6 +951,9 @@ input[type="checkbox"]:checked ~ p {
 @media (min-width: 768px) { /* Medium screen */
     .container {
         max-width: 45rem;
+    }
+    #footer {
+        height: 12.5rem;
     }
     #mainBody.mobile-toggled .container, #mainBody:target .container {
         transform: translate(0, 0);
