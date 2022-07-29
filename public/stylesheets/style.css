@@ -14,19 +14,17 @@
 .grecaptcha-badge {
     display: none;
 }
-.captcha-legal {
-    margin-bottom: 4px;
-}
-.captcha-legal p, .copyright {
-    margin-bottom: 4px;
+
+.captcha-legal p, .copyright p {
     font-size: 8pt;
     opacity: .7;
+    margin: 0;
 }
-.captcha-legal p a {
+.captcha-legal p a, .copyright p a {
     color: var(--canvas);
     opacity: .8;
 }
-.captcha-legal p a:hover {
+.captcha-legal p a:hover, .copyright p a:hover {
     color: var(--canvas);
 }
 

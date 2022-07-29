@@ -7,11 +7,11 @@ const axios = require('axios');
 const expressSession = require('express-session');
 const MongoStore = require('connect-mongo')
 const useragent = require('express-useragent');
-const request = require('request')
 const ops = require('./functions/ops') // my middleware functions to get data from mongodb
 
 const app = express()
 
+// Creates axios client and adds it to req to be used throughout the app.
 app.use((req, res, next) => {
     req.client = axios.create({
         baseURL: process.env.API_URL
