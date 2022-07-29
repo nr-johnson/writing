@@ -64,7 +64,7 @@ a:not(.no-nav, .btn, .header-link) {
     position: relative;
     color: var(--accent)
 }
-a:not(.no-nav, .btn, .header-link):hover {
+a:not(.no-nav, .btn, .header-link, .mobile-nav-link):hover {
     color: var(--accent);
     text-decoration: none;
     opacity: .95;

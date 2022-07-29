@@ -41,57 +41,73 @@ function setLinkEvents() {
     })
 }
 
-
+let loading = false
 // Function that loads new page data onto the site.
 async function pageChange(event, route) {
     if(event) {
         event.preventDefault() // If called by popstate it prevents it from navigating to its default location.
-        
     } else {
         if(new URL(window.location).pathname == route) return // Prevents the page from reloading the same information.
     }
 
     const content = document.getElementById('content') // Div for data to be loaded into.
     const head = document.getElementsByTagName('head')[0] // Document 'head' tag.
-    // Sets attribute on header that is used to style nav indicator
-    document.getElementById('mainBody').setAttribute('data-loc', route) 
 
-    // window.scroll(0,0)
+    /*
+        The 'loading' variable is used to prevent loading in the new page one is currently being loaded.
+        Without disabling interaction the user can rapidly swap menus which will break the site and cause major glitching.
+    */
+    if(!loading) {
+        loading = true
+        // Sets attribute on header that is used to style nav indicator
+        document.getElementById('mainBody').setAttribute('data-loc', route) 
 
-    content.classList.add('fade') // Hides pages content
-    content.innerHTML = '' // Deletes Page Content
-    // Removes elements from the head that are specfic to the previosly loaded page.
-    head.querySelectorAll('.var-head').forEach(tag => {
-        tag.parentNode.removeChild(tag)
-    })
+        // window.scroll(0,0)
 
-    const url = 'https://' + window.location.hostname + '/api' + route
-    const data = await serverRequest(url, 'GET') // Gets data from server
+        content.classList.add('fade') // Hides pages content
+        content.innerHTML = '' // Deletes Page Content
+        // Removes elements from the head that are specfic to the previosly loaded page.
+        head.querySelectorAll('.var-head').forEach(tag => {
+            tag.parentNode.removeChild(tag)
+        })
 
-    // Seperates content into head elements and body elements.
-    const sep = data.split("<hr class='sep'>")
-    const holdiv = document.createElement('div')
-    holdiv.innerHTML = sep[1] ? sep[0] : ''
-    
-    while(holdiv.children.length > 0) {
-        head.append(holdiv.children[0])
+        const url = 'https://' + window.location.hostname + '/api' + route
+        const data = await serverRequest(url, 'GET') // Gets data from server
+
+        // Seperates content into head elements and body elements.
+        const sep = data.split("<hr class='sep'>")
+        const holdiv = document.createElement('div')
+        holdiv.innerHTML = sep[1] ? sep[0] : ''
+        
+        while(holdiv.children.length > 0) {
+            head.append(holdiv.children[0])
+        }
+        content.innerHTML = sep[1] ? sep[1] : sep[0] // Adds data to page
+        content.classList.remove('fade') // Shows page content
+
+        
+
+        // Sets document title (relying on data from server resulted in glitchy behavior)
+        // It uses the url path (route variable) unless its the index, which has now path.
+        document.title = route.length > 1 ? 'NRJohnson | ' + route.substring(1,2).toUpperCase() + route.substring(2) : 'NRJohnson | Home'
+
+        // Adds navigation to browser history.
+        addToHistory(route)
+
+        if(route == '/map') loadFrame() // Loads map iframe if page loaded is the map page.
+
+        loading = false // Reenables menu interaction
+
+        addTipEvents() // Adds event listeners to any elements with the 'data-tip' attribute.
+        setLinkEvents() // Adds event listeners to any links that navigate locally.
     }
-    content.innerHTML = sep[1] ? sep[1] : sep[0] // Adds data to page
-    content.classList.remove('fade') // Shows page content
 
-    
-
-    // Sets document title (relying on data from server resulted in glitchy behavior)
-    // It uses the url path (route variable) unless its the index, which has now path.
-    document.title = route.length > 1 ? 'NRJohnson | ' + route.substring(1,2).toUpperCase() + route.substring(2) : 'NRJohnson | Home'
-
-    // Adds navigation to browser history.
-    addToHistory(route)
-
-    if(route == '/map') loadFrame() // Loads map iframe if page loaded is the map page.
-
-    addTipEvents() // Adds event listeners to any elements with the 'data-tip' attribute.
-    setLinkEvents() // Adds event listeners to any links that navigate locally.
+    /*
+        The 'loading' variable worked to prevent the page from breaking.
+        However, if the user to spam the menu the 'loading' variable will be stuck in true.
+        The timeout ensures that the menu will always be enabled after a brief pause.
+    */
+    setTimeout(() => { loading = false }, 250)
 }
 
 // This loads in the iframe containing the map. This is done using JS because it won't function without it. So a message will be displayed by default if this function is not called.
