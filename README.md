@@ -5,7 +5,7 @@ This is a Node.js based webpage meant to share information about my creative wri
 
 ## Key Features
 ### Single Page App
-The entire site (with one exception) is loaded onto a single html page. On initial load the server makes a request to itself using Express-Request to get the remaining data that is dynamically added to the page. After that, front end Javascript requests info from the server and adds it to the page. The front end also handles things such as changing the url, adding to history, changing the head meta tags, handeling popstate etc. 
+The entire site (with one exception) is loaded onto a single html page. On initial load the server makes a request to itself using Axios to get the remaining data that is dynamically added to the page. After that, front end Javascript requests info from the server and adds it to the page. The front end also handles things such as changing the url, adding to history, changing the head meta tags, handeling popstate etc. 
 
 This is done to provide a smooth user experience that isn't as choppy as traditional page loading.
 ### Also Works Without Javascript
