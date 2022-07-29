@@ -356,8 +356,8 @@ function addTipEvents() {
             const posY = pos.top
 
             // custom css properties are used to adjust to tips. This is done because the tips are psudo elements and can't be directly edited with javascript.
-            document.documentElement.style.setProperty('--tempY', ((mouseY - posY) - 25) + 'px')
-            document.documentElement.style.setProperty('--tempX', ((mouseX - posX) + 10) + 'px')
+            document.documentElement.style.setProperty('--tempY', ((mouseY - posY) - 5) + 'px')
+            document.documentElement.style.setProperty('--tempX', ((mouseX - posX) - 5) + 'px')
         })
     })
 }

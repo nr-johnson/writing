@@ -70,7 +70,7 @@ a:not(.no-nav, .btn, .header-link, .mobile-nav-link):hover {
     opacity: .95;
 }
 
-a:not(.no-nav, .nav-redir)[data-tip]::before {
+a:not(.no-nav, .nav-redir)[data-tip]::after {
     content: attr(data-tip);
     position: absolute;
     text-align: center;
@@ -86,17 +86,19 @@ a:not(.no-nav, .nav-redir)[data-tip]::before {
     background-color: var(--canvas);
     color: var(--accent);
     border: 2px solid var(--accent);
+    transform: translate(-100%, -100%);
     pointer-events: none;
     opacity: 0;
 }
 
-a[data-tip]:hover::before {
+a[data-tip]:hover::after {
     opacity: 1;
     z-index: 10;
 }
-a[data-tip]:not(.moving):hover::before {
+a[data-tip]:not(.moving):hover::after {
     right: var(--tempX);
     left: unset;
+    transform: unset;
     transition: .25s;
     transition-delay: .25s;
 }
@@ -270,11 +272,14 @@ hr.canvas {
 #headerSocial a {
     margin: 0;
 }
+#headerSocial a::after {
+    top: calc(var(--tempY) + 18px);
+    left: calc(var(--tempX) - 14px);
+}
 
 .social-link-img {
     height: 1.5rem;
     width: 1rem;
-    padding-bottom: .5rem;
 }
 .social-link-img img {
     width: 1rem;
