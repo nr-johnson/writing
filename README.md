@@ -10,8 +10,8 @@ The entire site (with one exception) is loaded onto a single html page. On initi
 This is done to provide a smooth user experience that isn't as choppy as traditional page loading.
 ### Also Works Without Javascript
 All buttons are links that will trigger a redirect if Javascript doesn't prevent the default event. This is to ensure that everything works if, for some reason, the visitor doesn't have Javascript enabled or is running on an old browser. Menus and alert boxes are also set up to work with target classes.
-### MongoDB Integration
-The site pulls from a MongoDB Database (managed seperatly) to populate the "stories" page and latest story card on the "home" page.
+### API Integration
+The site pulls from a MongoDB Database (managed seperatly) using my [Personal API](https://github.com/nr-johnson/api "My API Repo") to populate the "stories" page and latest story card on the "home" page.
 ### Addition Integrations
 Node-Mailer is used to send me an email from the Contact Me form
 
