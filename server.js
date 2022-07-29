@@ -65,6 +65,8 @@ app.get('/worldmap', async (req, res) => {
             public: true,
             frame: req.query.frame ? true : false // Hides a button if loaded through an iframe.
         })
+    }).catch(err => {
+        res.status(500).send('Error retrieving data.')
     })
     
 })
@@ -82,20 +84,27 @@ app.get(['/','/:page'], async (req, res, next) => {
     const err = req.session.error
     req.session.error = null
 
-    // Gets page data.
-    request(url, async (error, response, body) => {
+    req.client.get(url).then((resp) => {
         // Body will be split into two sections. This is identified by an 'hr' element with the a 'sep' class.
         // The first part is the head data, the second is the body data.
-        const sep = body.split("<hr class='sep'>")
-
+        const sep = resp.data.split("<hr class='sep'>")
         // Renders the "main.pug" file and sends the data gathered from 'request'.
         res.render('main', {
             data: sep,
             route: route,
             message: msg,
             error: err,
-            mobile: req.useragent.isMobile,
-            status: response.statusCode
+            status: 200,
+            mobile: req.useragent.isMobile
+        })
+    }).catch(err => {
+        res.status(err.response.status).render('main', {
+            data: [`<h3>Error ${err.response.status}</h3><p>${err.response.statusText}</p>`],
+            route: route,
+            message: msg,
+            error: null,
+            status: err.response.status,
+            mobile: req.useragent.isMobile
         })
     })
 })

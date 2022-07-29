@@ -16,7 +16,9 @@ router.get('/', async (req, res) => {
         res.render('pages/index', {
             story: stories[0] // Sends the latest story to home page.
         })
-    })    
+    }).catch(err => {
+        res.status(500).send(err)
+    })
 })
 
 // Gets content for stories page
@@ -25,6 +27,8 @@ router.get('/stories', async (req, res) => {
         res.render('pages/stories', {
             stories: resp.data
         })
+    }).catch(err => {
+        res.status(500).send(err)
     })
 
 })
@@ -81,6 +85,8 @@ router.post('/contact', (req, res) => {
         } else { // If captcha score is too low it rejects the request.
             res.send({ok: false, resp: 'Message not sent. Captcha score too low.'})
         }
+    }).catch(err => {
+        res.status(500).send(err)
     })
     
 })
@@ -112,6 +118,8 @@ router.post('/signup', async (req, res) => {
         } else { // If captcha score is too low it rejects the request.
             res.send({ok: false, resp: 'Captcha score too low.'})
         }
+    }).catch(err => {
+        res.status(500).send(err)
     })
     
 })
@@ -125,6 +133,8 @@ router.get('/about', async (req, res) => {
         req.session.message = {err: false, msg: `<h4>About ${story[0].title}</h4>${story[0].about}`}
 
         res.redirect(`${route}#myAlert`)
+    }).catch(err => {
+        res.status(500).send(err)
     })
 })
 

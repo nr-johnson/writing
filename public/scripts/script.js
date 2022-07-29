@@ -31,12 +31,16 @@ document.getElementById('myAlertBack').addEventListener('click', event => {
 })
 
 // Highjacks the functionality of all links so the data can be loaded without loading a new page (discount react).
-document.querySelectorAll('.nav-redir').forEach(link => {
-    link.addEventListener('click', (event) => {
-        pageChange(null, new URL(link.href).pathname) // Changes the page, second variable is the url path
-        event.preventDefault() // Prevent link from navigating the page.
+setLinkEvents()
+function setLinkEvents() {
+    document.querySelectorAll('.nav-redir').forEach(link => {
+        link.addEventListener('click', (event) => {
+            pageChange(null, new URL(link.href).pathname) // Changes the page, second variable is the url path
+            event.preventDefault() // Prevent link from navigating the page.
+        })
     })
-})
+}
+
 
 // Function that loads new page data onto the site.
 async function pageChange(event, route) {
@@ -85,6 +89,9 @@ async function pageChange(event, route) {
     addToHistory(route)
 
     if(route == '/map') loadFrame() // Loads map iframe if page loaded is the map page.
+
+    addTipEvents() // Adds event listeners to any elements with the 'data-tip' attribute.
+    setLinkEvents() // Adds event listeners to any links that navigate locally.
 }
 
 // This loads in the iframe containing the map. This is done using JS because it won't function without it. So a message will be displayed by default if this function is not called.
@@ -311,4 +318,30 @@ function enableScroll() {
     body.style.overflow = 'unset'
     body.style.paddingRight = 'unset'
     body.style.overflowX = 'hidden'
+}
+
+// I made a custom tooltip using the 'data-tip' attribute.
+// Most of the details for the tooltips are handled using css, but I wanted to add mouse tracking to make it feel smoother.
+addTipEvents() // Calls the function to add event listeners on page load. Also class in the 'pageChange' function.
+function addTipEvents() {
+    // Grabs all elemenets with the 'data-tip' attribute.
+    document.querySelectorAll('[data-tip]').forEach(link => {
+        // Adds listener to each.
+        link.addEventListener('mousemove', (e) => { 
+            link.classList.add('moving') // Prevents css transition timing.
+
+            // Mouse positions
+            let mouseX = e.clientX
+            let mouseY = e.clientY
+
+            // Elements objective position in the window
+            const pos = link.getBoundingClientRect()
+            const posX = pos.left
+            const posY = pos.top
+
+            // custom css properties are used to adjust to tips. This is done because the tips are psudo elements and can't be directly edited with javascript.
+            document.documentElement.style.setProperty('--tempY', ((mouseY - posY) - 25) + 'px')
+            document.documentElement.style.setProperty('--tempX', ((mouseX - posX) + 10) + 'px')
+        })
+    })
 }

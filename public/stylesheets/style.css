@@ -5,6 +5,9 @@
     --accent: #0C3B5D;
     --great: #19661d;
     --caution: #580e0e;
+
+    --tempY: -1.75rem;
+    --tempX: 0;
 }
 
 /* Hides reCAPTCA box and style the legalally required text */
@@ -55,38 +58,45 @@ h1, h2, h3, h4 {
     font-size: 18pt;
     font-weight: 600;
 }
-a:not(.no-nav, .btn, .nav-redir) {
+a:not(.no-nav, .btn, .header-link) {
     position: relative;
     color: var(--accent)
 }
-a:not(.no-nav, .btn, .nav-redir):hover {
+a:not(.no-nav, .btn, .header-link):hover {
     color: var(--accent);
     text-decoration: none;
     opacity: .95;
 }
 
-a:not(.no-nav, .btn, .nav-redir)[data-tip]::after {
+a:not(.no-nav, .nav-redir)[data-tip]::before {
     content: attr(data-tip);
     position: absolute;
     text-align: center;
-    padding: 0 .25rem;
+    padding: .05rem .25rem;
     box-shadow: 0 0 4px #00000050;
     border-radius: 4px;
-    bottom: -1.35rem;
-    right: 0;
+    top: var(--tempY);
+    left: var(--tempX);
     white-space: nowrap;
     font-size: 9pt;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
     background-color: var(--canvas);
     color: var(--accent);
-    border: 1px solid var(--accent);
+    border: 2px solid var(--accent);
     pointer-events: none;
     opacity: 0;
-    transition: .25s;
 }
 
-a[data-tip]:hover::after {
+a[data-tip]:hover::before {
     opacity: 1;
+    z-index: 10;
+}
+a[data-tip]:not(.moving):hover::before {
+    right: var(--tempX);
+    left: unset;
     transition: .25s;
+    transition-delay: .25s;
 }
 
 hr {
@@ -705,14 +715,15 @@ input[type="checkbox"]:checked ~ p {
 .story-card {
     background-color: var(--accent);
     border-radius: 4px;
-    overflow: hidden;
     min-height: 10rem;
 }
 .story-card .story-fig {
     position: absolute;
     top: 0;
     left: 0;
-    bottom: 0;  
+    bottom: 0;
+    overflow: hidden;
+    border-radius: 4px 0 0 4px;  
 }
 .story-image {
     position: absolute;
