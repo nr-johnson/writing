@@ -1,5 +1,5 @@
 # Writing Blog Webpage
-This is a Node.js based webpage meant to share information about my creative writing.
+This is a Node.js based webpage hosted on my Digital Ocean server. I created it to share information about my creative writing.
 [View Live Site](https://stories.nrjohnson.net/ "Site for App")
 
 ***
