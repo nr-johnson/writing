@@ -76,7 +76,7 @@ app.get(['/','/:page'], async (req, res, next) => {
     // the page param is used to determin what content to load from the "api" routes.
     const route = req.params.page || '' // if blank it grabs the index page.
     const url = `https://${req.hostname}/api/${route}?mobile=${req.useragent.isMobile}` // axios url string.
-    // This is 'request' grabbing the page data from the "api" routes and adding the response to a variable.
+    
     
     const msg = req.session.message
     req.session.message = null
@@ -84,6 +84,7 @@ app.get(['/','/:page'], async (req, res, next) => {
     const err = req.session.error
     req.session.error = null
 
+    // This is the axios request grabbing the page data from the "api" routes and sending the data to the page as a variable.
     req.client.get(url).then((resp) => {
         // Body will be split into two sections. This is identified by an 'hr' element with the a 'sep' class.
         // The first part is the head data, the second is the body data.
@@ -91,6 +92,7 @@ app.get(['/','/:page'], async (req, res, next) => {
         // Renders the "main.pug" file and sends the data gathered from 'request'.
         res.render('main', {
             data: sep,
+            title: route.length > 12 ? true : false, // Individual story pages need to set there own titles.
             route: route,
             message: msg,
             error: err,

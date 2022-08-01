@@ -29,7 +29,7 @@ section(class='row')
                         div(class='row p-0')
                             div(class='col-md-6')
                                 div(class='text-center mt-1')
-                                    a(href='/api/about?id=' + story._id + '&route=/stories' class='btn w-100' data-tip='Story Details' onclick='myAlert("<h4>About ' + story.title + '</h4>' + story.about + '", null, event)') About
+                                    a(href='/story=' + story._id class='btn w-100 nav-redir' data-tip='Story Details') About
                             div(class='col-md-6 mt-2 mt-md-0')
                                 div(class='text-center mt-1')
                                     a(href=story.url target='_blank' class='btn w-100' data-tip='Read on Vocal') Continue Reading

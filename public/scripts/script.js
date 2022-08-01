@@ -49,6 +49,8 @@ async function pageChange(event, route) {
     } else {
         if(new URL(window.location).pathname == route) return // Prevents the page from reloading the same information.
     }
+    
+    
 
     const content = document.getElementById('content') // Div for data to be loaded into.
     const head = document.getElementsByTagName('head')[0] // Document 'head' tag.
@@ -59,6 +61,10 @@ async function pageChange(event, route) {
     */
     if(!loading) {
         loading = true
+
+        // Adds navigation to browser history.
+        addToHistory(location.pathname)
+
         // Sets attribute on header that is used to style nav indicator
         document.getElementById('mainBody').setAttribute('data-loc', route) 
 
@@ -89,7 +95,11 @@ async function pageChange(event, route) {
 
         // Sets document title (relying on data from server resulted in glitchy behavior)
         // It uses the url path (route variable) unless its the index, which has now path.
-        document.title = route.length > 1 ? 'NRJohnson | ' + route.substring(1,2).toUpperCase() + route.substring(2) : 'NRJohnson | Home'
+        if(route.length > 24) {
+            document.title = 'NRJohnson | ' + document.getElementById('title').innerHTML
+        } else {
+            document.title = route.length > 1 ? 'NRJohnson | ' + route.substring(1,2).toUpperCase() + route.substring(2) : 'NRJohnson | Home'
+        }
 
         // Adds navigation to browser history.
         addToHistory(route)

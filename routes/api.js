@@ -30,7 +30,17 @@ router.get('/stories', async (req, res) => {
     }).catch(err => {
         res.status(500).send(err)
     })
+})
 
+// Gets info about a specific story
+router.get('/story=:id', async(req, res) => {
+    req.client.get(`/writing/stories?_id=${req.params.id}`).then(resp => {
+        res.render('pages/story', {
+            story: resp.data[0]
+        })
+    }).catch(err => {
+        res.status(500).send(err)
+    })
 })
 
 // Gets Map page

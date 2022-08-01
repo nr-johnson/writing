@@ -206,7 +206,6 @@ hr.canvas {
     display: inline-block;
     width: 5rem;
     text-align: center;
-    
 }
 #headerNavSelectorContainer {
     position: absolute;
@@ -220,6 +219,7 @@ hr.canvas {
     position: absolute;
     height: .16rem;
     width: 4rem;
+    left: 50%;
     bottom: -.25rem;
     transform: translateX(-50%);
     opacity: 0;
@@ -788,6 +788,47 @@ input[type="checkbox"]:checked ~ p {
     font-size: 8pt;
 }
 /* ^^ Stories Page */
+
+/* Story Page */
+.banner-main {
+    position: relative;
+    top: -2rem;
+    left: -1rem;
+    width: calc(100% + 2rem);
+}
+.banner-image-cont {
+    position: relative;
+    padding-top: 56%;
+    border-radius: 2px 2px 0 0;
+    overflow: hidden;
+}
+.banner-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    border-radius: 2px 2px 0 0;
+    overflow: hidden;
+}
+.banner-image img {
+    position: relative;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    border-radius: 2px 2px 0 0;
+}
+.banner-btn-main {
+    position: absolute;
+    bottom: 0;
+    padding: 1rem;
+}
+.about-content {
+    position: relative;
+    top: -1rem;
+}
+/*  ^^ Story Page */
 
 /* Custom Alert Box */
 #myAlert {

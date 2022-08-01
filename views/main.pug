@@ -13,7 +13,8 @@ html(lang="en")
         
         block head
             if status == 200
-                title= route ? 'NRJohnson | ' + route.substring(0,1).toUpperCase() + route.substring(1) : 'NRJohnson | Home'
+                if !title
+                    title= route ? 'NRJohnson | ' + route.substring(0,1).toUpperCase() + route.substring(1) : 'NRJohnson | Home'
             else 
                 title= status
     body#main
