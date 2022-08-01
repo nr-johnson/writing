@@ -282,7 +282,7 @@ hr.canvas {
 #headerSocial {
     position: absolute;
     right: -1.5rem;
-    bottom: -4.5rem;
+    bottom: -3rem;
     width: fit-content;
     padding: 0 0 .3rem 0;
     z-index: 1;
