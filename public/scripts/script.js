@@ -239,7 +239,7 @@ async function signUp(event, form) {
         // If response is good, sends confirmation message to user.
         if(resp.ok) {
             myAlert(
-                "<p>Hello " + fields[0].value.split(' ')[0] + "!</p><p>Thank you for signing up to receive updates.</p>"
+                "<p>Hello " + fields[0].value.split(' ')[0] + "!</p><p>Thank you for signing up to receive updates.</p><p class='note'>Note: I havn't worked through managing email campaigns yet, so you won't receive anything from me until I do figure it out..</p>"
             )
         } else {
             // If server response has an error it sends that to the user.

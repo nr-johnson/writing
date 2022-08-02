@@ -476,28 +476,22 @@ hr.canvas {
 #mainBody[data-loc='/'] .mobile-selector {
     left: .75rem;
     opacity: 1;
-
-    transition-timing-function: linear;
     transition: .25s;
 }
 #mainBody[data-loc='/stories'] .mobile-selector {
     left: 5.25rem;
     /* top: 9rem; */
     opacity: 1;
-    
-    transition-timing-function: linear;
     transition: .25s;
 }
 #mainBody[data-loc='/map'] .mobile-selector {
     left: 9.75rem;
     opacity: 1;
-    transition-delay: .25s;
     transition: .25s;
 }
 #mainBody[data-loc='/contact'] .mobile-selector {
     left: 14.25rem;
     opacity: 1;
-    transition-delay: .25s;
     transition: .25s;
 }
 
@@ -747,11 +741,14 @@ input[type="checkbox"]:checked ~ p {
 }
 .story-card .story-fig {
     position: absolute;
+    display: block;
     top: 0;
     left: 0;
-    bottom: 0;
+    right: 0;
+    height: 10rem;
+    padding-left: 0;
     overflow: hidden;
-    border-radius: 4px 0 0 4px;  
+    border-radius: 4px 4px 0 0;  
 }
 .story-image {
     position: absolute;
@@ -761,8 +758,7 @@ input[type="checkbox"]:checked ~ p {
 }
 .story-content {
     position: relative;
-    padding: 1rem;
-    padding-bottom: .25rem;
+    padding: 11rem 1rem .25rem 1rem;
 }
 .story-title {
     font-size: 18pt;
@@ -827,6 +823,10 @@ input[type="checkbox"]:checked ~ p {
 .about-content {
     position: relative;
     top: -1rem;
+}
+.preview-quote {
+    padding-left: 2rem;
+    border-left: 2px solid var(--accent);
 }
 /*  ^^ Story Page */
 
@@ -991,21 +991,31 @@ input[type="checkbox"]:checked ~ p {
         pointer-events: none;
     }
 
+    .mobile-selector {
+        top: 9rem;
+        left: .5rem !important;
+        opacity: 0;
+    }
+
     #mainBody[data-loc='/'] .mobile-selector {
         top: 9rem;
-        left: .5rem;
+        opacity: 1;
+        transition: .25s;
     }
     #mainBody[data-loc='/stories'] .mobile-selector {
         top: 14.75rem;
-        left: .5rem;
+        opacity: 1;
+        transition: .25s;
     }
     #mainBody[data-loc='/map'] .mobile-selector {
         top: 20.5rem;
-        left: .5rem;
+        opacity: 1;
+        transition: .25s;
     }
     #mainBody[data-loc='/contact'] .mobile-selector {
         top: 26.25rem;
-        left: .5rem;
+        opacity: 1;
+        transition: .25s;
     }
 }
 
@@ -1034,6 +1044,16 @@ input[type="checkbox"]:checked ~ p {
     }
     .my-alert-box {
         max-width: 50rem;
+    }
+    .story-card .story-fig {
+        right: unset;
+        height: unset;
+        bottom: 0;
+        border-radius: 4px 0 0 4px;  
+    }
+    .story-content {
+        position: relative;
+        padding: 1rem 1rem .25rem 1rem;
     }
 }
 @media (min-width: 992px) { /* Large screen */

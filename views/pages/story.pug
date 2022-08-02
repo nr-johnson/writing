@@ -16,8 +16,8 @@ section(class='banner-main')
         figure(class='banner-image')
             img(src=story.image)
     div(class='row banner-btn-main')
-        div(class='col-12 col-md-4 p-0 ms-auto')
-            a(href=story.url class='btn w-100' target='_blank') Read Story on Vocal
+        div(class='col-6 col-md-3 col-lg-2 p-0 ms-auto')
+            a(href=story.url class='btn w-100' target='_blank') View on Vocal
                  figure(class='text-image ms-1')
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
@@ -25,15 +25,14 @@ section(class='banner-main')
                     </svg>
 
 section(class='row about-content')
-    div(class='col-12 page-title')
-        h2 About 
-            span#title= story.title
+    div(class='col-12 page-title text-center')
+        h2#title= story.title
 
     div(class='col-12')
         | !{story.about}
 
-        h2(class='page-title mt-4') Story Preview
-        | !{story.preview}
+        h4(class='page-title mt-4') Story Preview
+        blockquote(class='preview-quote') !{story.preview}
 
 div(class='row mb-2')
     div(class='col-12 col-md-6 mx-auto')

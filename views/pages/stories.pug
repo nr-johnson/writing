@@ -18,21 +18,21 @@ section(class='row')
         div(class='col-12 col-lg-6 mb-3')
             div(class='story-card')
                 div(class='row h-100 position-relative justify-content-end')
-                    figure(class='col-4 m-0 p-0 story-fig')
+                    figure(class='col-12 col-md-4 m-0 p-0 story-fig')
                         img(src=story.image alt=story.title + ' cover image' class='story-image')
-                    div(class='col-8 story-content')
+                    div(class='col-12 col-md-8 story-content')
                         h4(class='story-title')= story.title
                         hr(class='m-0 canvas')
                         div(class='story-preview')
                             | !{story.preview}
                     div(class='col-12 mb-3 mt-2')
                         div(class='row p-0')
-                            div(class='col-md-6')
+                            div(class='col-md-5')
                                 div(class='text-center mt-1')
                                     a(href='/story=' + story._id class='btn w-100 nav-redir' data-tip='Story Details') About
-                            div(class='col-md-6 mt-2 mt-md-0')
+                            div(class='col-md-7 mt-2 mt-md-0')
                                 div(class='text-center mt-1')
-                                    a(href=story.url target='_blank' class='btn w-100' data-tip='Read on Vocal') Continue Reading
+                                    a(href=story.url target='_blank' class='btn btn-great w-100' data-tip='Read on Vocal') Continue Reading
                                         figure(class='text-image ms-1')
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
                                                 <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
