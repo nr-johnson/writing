@@ -27,12 +27,18 @@ section(class='banner-main')
 section(class='row about-content')
     div(class='col-12 page-title text-center')
         h2#title= story.title
+        hr
 
-    div(class='col-12')
+    div(class='col-12 mt-4')
+        h4(class='page-title') About
         | !{story.about}
 
-        h4(class='page-title mt-4') Story Preview
+        h4(class='page-title mt-4') Preview
         blockquote(class='preview-quote') !{story.preview}
+
+        
+
+        
 
 div(class='row mb-2')
     div(class='col-12 col-md-6 mx-auto')

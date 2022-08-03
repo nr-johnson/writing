@@ -785,7 +785,7 @@ input[type="checkbox"]:checked ~ p {
 .story-card {
     background-color: var(--accent);
     border-radius: 4px;
-    min-height: 10rem;
+    min-height: 24rem;
 }
 .story-card .story-fig {
     position: absolute;
@@ -804,9 +804,18 @@ input[type="checkbox"]:checked ~ p {
     width: 100%;
     object-fit: cover;
 }
+.story-content-main {
+    position: relative;
+    height: 100%;
+}
 .story-content {
     position: relative;
     padding: 11rem 1rem .25rem 1rem;
+}
+.story-buttons {
+    position: relative;
+    margin-top: 26px;
+    bottom: 1rem;
 }
 .story-title {
     font-size: 18pt;
@@ -1093,6 +1102,15 @@ input[type="checkbox"]:checked ~ p {
     }
     .my-alert-box {
         max-width: 50rem;
+    }
+    .story-card {
+        min-height: unset;
+        height: 16.25rem;
+    }
+    .story-buttons {
+        position: absolute;
+        margin-top: unset;
+        bottom: 1rem;
     }
     .story-card .story-fig {
         right: unset;

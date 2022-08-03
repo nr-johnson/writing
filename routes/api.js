@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     req.client.get('/writing/stories?published=true').then(resp => {
         let stories = resp.data
         stories.sort(function(a, b){
-            return a.date < b.date ? -1 : a.date > b.date ? 1 : 0
+            return a.date > b.date ? -1 : a.date < b.date ? 1 : 0
         });
         res.render('pages/index', {
             story: stories[0] // Sends the latest story to home page.
@@ -24,6 +24,9 @@ router.get('/', async (req, res) => {
 // Gets content for stories page
 router.get('/stories', async (req, res) => {
     req.client.get('/writing/stories?published=true').then(resp => {
+        resp.data.sort(function(a, b){
+            return a.date > b.date ? -1 : a.date < b.date ? 1 : 0
+        });
         res.render('pages/stories', {
             stories: resp.data
         })
