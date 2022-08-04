@@ -79,6 +79,13 @@ app.get(['/','/:page', '/:page/:id'], async (req, res, next) => {
     // the page param is used to determin what content to load from the "api" routes.
     const route = req.params.page || '' // if blank it grabs the index page.
     let url = `https://${req.hostname}/api/${route}?mobile=${req.useragent.isMobile}` // axios url string.
+
+    // I changed the url structure. This check ensure old links work.
+    if(route.length > 24) {
+        const story = route.substring(6)
+        res.redirect(`/story/${story}`)
+        return
+    }
     
     if(req.hostname == 'localhost') {
         url = `localhost:${process.env.PORT}/api/${route}?mobile=${req.useragent.isMobile}`
