@@ -53,6 +53,7 @@ async function pageChange(event, route) {
     
 
     const content = document.getElementById('content') // Div for data to be loaded into.
+    const body = document.getElementById('body')
     const head = document.getElementsByTagName('head')[0] // Document 'head' tag.
 
     /*
@@ -70,14 +71,18 @@ async function pageChange(event, route) {
 
         // window.scroll(0,0)
 
-        content.classList.add('fade') // Hides pages content
+        body.classList.add('shift') // Hides pages content
         content.innerHTML = '' // Deletes Page Content
         // Removes elements from the head that are specfic to the previosly loaded page.
         head.querySelectorAll('.var-head').forEach(tag => {
             tag.parentNode.removeChild(tag)
         })
 
-        const url = 'https://' + window.location.hostname + '/api' + route
+        let url = 'https://' + window.location.hostname + '/api' + route
+        if(window.location.hostname == 'localhost') {
+            url = 'http://localhost:8000/api' + route
+        }
+
         const data = await serverRequest(url, 'GET') // Gets data from server
 
         // Seperates content into head elements and body elements.
@@ -89,7 +94,7 @@ async function pageChange(event, route) {
             head.append(holdiv.children[0])
         }
         content.innerHTML = sep[1] ? sep[1] : sep[0] // Adds data to page
-        content.classList.remove('fade') // Shows page content
+        body.classList.remove('shift') // Shows page content
 
         
 
@@ -140,11 +145,13 @@ function loadFrame() {
     frame.title = "NRJohnson's Interactive Map"
     frame.setAttribute('data-blockRight', '© Copyright NRJohnson')
 
-    div.innerHTML = ''
-    newDiv.appendChild(frame)
-    div.appendChild(newDiv)
+    if(div) {
+        div.innerHTML = ''
+        newDiv.appendChild(frame)
+        div.appendChild(newDiv)
 
-    button.classList.remove('d-none')
+        button.classList.remove('d-none')
+    }
 
     //- Event Listeners to disable and enable scroll when hovering over the map.
     frame.addEventListener('mouseover', () => {disableScroll()})
@@ -234,7 +241,11 @@ async function signUp(event, form) {
         myAlert(errors.join(''), false, null, true)
     } else {
         // Sends 'POST' request to server to add user to mailchimp.
-        const req = await protectedServerRequest('https://' + window.location.hostname + '/api/signup', 'POST', data) // Sends data to server
+        let url = 'https://' + window.location.hostname + '/api/signup'
+        if(window.location.hostname == 'localhost') {
+            url = 'http://localhost:8000/api/signup'
+        }
+        const req = await protectedServerRequest(url, 'POST', data) // Sends data to server
         const resp = JSON.parse(req) // Parsed server response.
         // If response is good, sends confirmation message to user.
         if(resp.ok) {
@@ -243,7 +254,8 @@ async function signUp(event, form) {
             )
         } else {
             // If server response has an error it sends that to the user.
-            myAlert('Error signing you up. Please try again later use another email address.', false, null, true)
+            console.log(resp)
+            myAlert('Error signing you up. Please try again later or use another email address.', false, null, true)
             
         }
     }

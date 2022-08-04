@@ -4,60 +4,69 @@
 const express = require('express')
 const router = express.Router()
 
-// Get content for home page
-router.get('/', async (req, res) => {
-    // Gets stories from database then sorts them by date.
-    // let stories = await req.findMany('writing', 'stories', {published: true})
-    req.client.get('/writing/stories?published=true').then(resp => {
-        let stories = resp.data
-        stories.sort(function(a, b){
-            return a.date > b.date ? -1 : a.date < b.date ? 1 : 0
-        });
-        res.render('pages/index', {
-            story: stories[0] // Sends the latest story to home page.
-        })
+// Requests the data from the './functions/ops.js' file from the function in 'siteOps'.
+router.get(['/', '/:page', '/:page/:story'], async (req, res) => {
+    await req.getData(req.params.page || '', req.params.story).then(resp => {
+        res.status(200).send(resp)
     }).catch(err => {
-        res.status(500).send(err)
+        res.send(err)
     })
 })
 
-// Gets content for stories page
-router.get('/stories', async (req, res) => {
-    req.client.get('/writing/stories?published=true').then(resp => {
-        resp.data.sort(function(a, b){
-            return a.date > b.date ? -1 : a.date < b.date ? 1 : 0
-        });
-        res.render('pages/stories', {
-            stories: resp.data
-        })
-    }).catch(err => {
-        res.status(500).send(err)
-    })
-})
+// // Get content for home page
+// router.get('/', async (req, res) => {
+//     // Gets stories from database then sorts them by date.
+//     // let stories = await req.findMany('writing', 'stories', {published: true})
+//     req.client.get('/writing/stories?published=true').then(resp => {
+//         let stories = resp.data
+//         stories.sort(function(a, b){
+//             return a.date > b.date ? -1 : a.date < b.date ? 1 : 0
+//         });
+//         res.render('pages/index', {
+//             story: stories[0] // Sends the latest story to home page.
+//         })
+//     }).catch(err => {
+//         res.status(500).send(err)
+//     })
+// })
 
-// Gets info about a specific story
-router.get('/story=:id', async(req, res) => {
-    req.client.get(`/writing/stories?_id=${req.params.id}`).then(resp => {
-        res.render('pages/story', {
-            story: resp.data[0]
-        })
-    }).catch(err => {
-        res.status(500).send(err)
-    })
-})
+// // Gets content for stories page
+// router.get('/stories', async (req, res) => {
+//     req.client.get('/writing/stories?published=true').then(resp => {
+//         resp.data.sort(function(a, b){
+//             return a.date > b.date ? -1 : a.date < b.date ? 1 : 0
+//         });
+//         res.render('pages/stories', {
+//             stories: resp.data
+//         })
+//     }).catch(err => {
+//         res.status(500).send(err)
+//     })
+// })
 
-// Gets Map page
-router.get('/map', (req, res) => {
-    // 'mobile' variable is used to load the map iframe only if not on mobile.
-    res.render('pages/map', {
-        mobile: req.query.mobile ? req.query.mobile === 'true' : req.useragent.isMobile
-    })
-})
+// // Gets info about a specific story
+// router.get('/story=:id', async(req, res) => {
+//     req.client.get(`/writing/stories?_id=${req.params.id}`).then(resp => {
+//         res.render('pages/story', {
+//             story: resp.data[0]
+//         })
+//     }).catch(err => {
+//         res.status(500).send(err)
+//     })
+// })
 
-// Gets Contect Me page
-router.get('/contact', (req, res) => {
-    res.render('pages/contact')
-})
+// // Gets Map page
+// router.get('/map', (req, res) => {
+//     // 'mobile' variable is used to load the map iframe only if not on mobile.
+//     res.render('pages/map', {
+//         mobile: req.query.mobile ? req.query.mobile === 'true' : req.useragent.isMobile
+//     })
+// })
+
+// // Gets Contect Me page
+// router.get('/contact', (req, res) => {
+//     res.render('pages/contact')
+// })
 
 // Contact form post
 router.post('/contact', (req, res) => {
@@ -159,15 +168,15 @@ router.get('/error', (req, res) => {
     res.render('pages/error')
 })
 
-router.get('/:page', (req, res) => {
-    let err = new Error('Not Found');
-    err.status = 404;
-    res.status(404)
-    res.render('pages/error', {
-        message: err.message,
-        error: req.dev ? err : {}
-    })
-})
+// router.get('/:page', (req, res) => {
+//     let err = new Error('Not Found');
+//     err.status = 404;
+//     res.status(404)
+//     res.render('pages/error', {
+//         message: err.message,
+//         error: req.dev ? err : {}
+//     })
+// })
 
 
 

@@ -544,10 +544,64 @@ hr.canvas {
     min-height: calc(100vh - 15rem);
     border-radius: 4px 4px 0 0;
     
-} 
-#content.fade {
+}
+#pageLoading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    opacity: 0;
+}
+#pageLoader {
+    position: relative;
+    height: 7rem;
+    width: 7rem;
+    border-radius: 50%;
+    background: linear-gradient(90deg, var(--accent) 50%, var(--canvas) 50%);
+}
+#pageLoader::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 6rem;
+    width: 6rem;
+    border-radius: 50%;
+    background: var(--canvas)
+}
+#pageLoading p {
+    position: absolute;
+    width: fit-content;
+    white-space: nowrap;
+    left: 50%;
+    transform: translateX(-50%);
+}
+#pageLoading p::after {
+    content: 'Getting data from server...';
+}
+#body.shift #content {
     opacity: 0;
     transition: .25s;
+}
+#body.shift #pageLoading {
+    opacity: 1;
+    transition: .5s;
+    transition-delay: .5s;
+}
+#body.shift #pageLoader {
+    animation-name: pageLoading;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+@keyframes pageLoading {
+    from {transform: rotate(0);}
+    to {transform: rotate(360deg);}
 }
 
 #footer {

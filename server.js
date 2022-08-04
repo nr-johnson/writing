@@ -16,6 +16,9 @@ app.use((req, res, next) => {
     req.client = axios.create({
         baseURL: process.env.API_URL
     })
+
+    req.root = __dirname
+
     next()
 })
 
@@ -72,23 +75,25 @@ app.get('/worldmap', async (req, res) => {
 })
 
 // All requests that don't start with "/api", "/forms", or "/worldmap" land here.
-app.get(['/','/:page'], async (req, res, next) => {
+app.get(['/','/:page', '/:page/:id'], async (req, res, next) => {
     // the page param is used to determin what content to load from the "api" routes.
     const route = req.params.page || '' // if blank it grabs the index page.
-    const url = `https://${req.hostname}/api/${route}?mobile=${req.useragent.isMobile}` // axios url string.
+    let url = `https://${req.hostname}/api/${route}?mobile=${req.useragent.isMobile}` // axios url string.
     
-    
+    if(req.hostname == 'localhost') {
+        url = `localhost:${process.env.PORT}/api/${route}?mobile=${req.useragent.isMobile}`
+    }
+
     const msg = req.session.message
     req.session.message = null
 
     const err = req.session.error
     req.session.error = null
 
-    // This is the axios request grabbing the page data from the "api" routes and sending the data to the page as a variable.
-    req.client.get(url).then((resp) => {
+    req.getData(route, req.params.id).then(resp => {
         // Body will be split into two sections. This is identified by an 'hr' element with the a 'sep' class.
         // The first part is the head data, the second is the body data.
-        const sep = resp.data.split("<hr class='sep'>")
+        const sep = resp.split("<hr class='sep'>")
         // Renders the "main.pug" file and sends the data gathered from 'request'.
         res.render('main', {
             data: sep,
@@ -100,20 +105,29 @@ app.get(['/','/:page'], async (req, res, next) => {
             mobile: req.useragent.isMobile
         })
     }).catch(err => {
-        res.status(err.response.status).render('main', {
-            data: [`<h3>Error ${err.response.status}</h3><p>${err.response.statusText}</p>`],
-            route: route,
+        const status = err.response ? err.reponse.status : 500
+        res.status(status).render('main', {
+            data: [`<h3>Error ${status}</h3>
+                <p>${err.response ? err.response.statusText : err.message}</p>`],
+            title: `Error | ${status}`,
             message: msg,
             error: null,
-            status: err.response.status,
+            status: status,
             mobile: req.useragent.isMobile
         })
     })
+
+    // // This is the axios request grabbing the page data from the "api" routes and sending the data to the page as a variable.
+    // req.client.get(url).then((resp) => {
+    
+    // }).catch(err => {
+    
+    // })
 })
 
 // Server ---
 const http = require('http')
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 8000
 
 app.set('port', PORT)
 

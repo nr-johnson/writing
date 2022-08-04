@@ -38,7 +38,7 @@ html(lang="en")
             main(class='container p-0')
                 include templates/header.pug
                 div#body
-                    div#content
+                    div#content(class='content')
                         if data
                             if data[1]
                                 | !{data[1]}
@@ -46,6 +46,9 @@ html(lang="en")
                                 | !{data[0]}
                         if error
                             p= error
+                    div#pageLoading
+                        div#pageLoader
+                        p(class='text-center mt-4')
             
                 include templates/footer.pug
 

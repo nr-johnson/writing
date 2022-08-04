@@ -1,5 +1,7 @@
 const nodemailer = require('nodemailer');
 const chimp = require("mailchimp-marketing");
+const path = require('path')
+const pug = require('pug')
 
 // Sets MailChimp credentials
 chimp.setConfig({
@@ -10,6 +12,79 @@ chimp.setConfig({
 // Functions that arent's related to MongoDB
 function siteOps() {
     return (req, res, next) => {
+        /*
+            Ok... Phew... Lot of work figuring this out.
+            So the 'getData' function below gathers the data for the different routes.
+            I discovered a function in the 'pug' module that allows me to render the files without sending it to the client at the same time.
+            This allowed me to set the rendered html as a variable to be returned to where ever it's needed.
+            The function is called by the main server on initial page load and from the 'api' routes that are called from the front end.
+            The point of doing it this way was to prevent the app from making a bunch of http requests to itself.
+        */
+        req.getData = (route, story) => {
+            const folder = `${req.root}/views/pages/`
+            return new Promise((resolve, reject) => {
+                // If the request is a specific story it handles the request differently then the other routes (extra path).
+                if(story) {
+                    req.client.get(`/writing/stories?_id=${story}`).then(resp => {
+                        const storyHtml = pug.renderFile(`${folder}story.pug`, {
+                            story: resp.data[0]
+                        })
+                        resolve(storyHtml)
+                    }).catch(err => {
+                        reject(err)
+                    })
+                } else {
+                    // Depending on the route, it gathers the data and returns it.
+                    switch(route) {
+                        // Stories route
+                        case 'stories':
+                            // Gets stories from database then sorts them by date.
+                            req.client.get('/writing/stories?published=true').then(resp => {
+                                let stories = resp.data
+                                stories.sort(function(a, b){
+                                    return a.date > b.date ? -1 : a.date < b.date ? 1 : 0
+                                });
+                                const storiesHtml = pug.renderFile(`${folder}stories.pug`, {
+                                    stories: stories
+                                })
+                                resolve(storiesHtml)
+                            }).catch(err => {
+                                reject(err)
+                            })
+                            break
+                        
+                        // Map Route
+                        case 'map':
+                            const mapHtml = pug.renderFile(`${folder}map.pug`, {
+                                mobile: req.query.mobile ? req.query.mobile === 'true' : req.useragent.isMobile
+                            })
+                            resolve(mapHtml)
+                            break
+                        case 'contact':
+                            const conatctHtml = pug.renderFile(`${folder}contact.pug`)
+                            resolve(conatctHtml)
+                            break
+                        default:
+                            // This is the default route (the index page).
+                            // Gets stories from database then sorts them by date.
+                            req.client.get('/writing/stories?published=true').then(resp => {
+                                let stories = resp.data
+                                stories.sort(function(a, b){
+                                    return a.date > b.date ? -1 : a.date < b.date ? 1 : 0
+                                });
+                                const indexHTML = pug.renderFile(`${folder}index.pug`, {
+                                    story: stories[0]
+                                })
+                                resolve(indexHTML)
+                            }).catch(err => {
+                                reject(err)
+                            })
+                    }
+                }
+            })
+        }
+
+
         // Adds or updates memeber in mailchimp.
         req.addUpdateChimp = data => {
             return new Promise(async resolve => {
