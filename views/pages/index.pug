@@ -10,41 +10,71 @@ meta(name="twitter:card" content="summary" class='var-head')
 
 <hr class='sep'>
 
+section(class='latest-story')
+    figure(class='latest-fig')
+        img(src=story.image)
+    div(class='row')
+        div(class='col-12 col-md-6 col-lg-5 latest-content')
+            div(class='row')
+                div(class='col-12')
+                    h2 Latest Story:
+                    hr
+                    h4(class='mt-1')= story.title
+                div(class='col-12 latest-preview mt-1')
+                    | !{story.preview}
+            div(class='row mt-3')
+                div(class='col-md-4')
+                    a(href="/story=" + story._id class='btn w-100 nav-redir') About
+                div(class='col-md-8 mt-3 mt-md-0')
+                    a(href=story.url target='_blank' class='btn btn-great w-100' data-tip='Read on Vocal') Continue Reading
+                        figure(class='text-image ms-1')
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                                <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+                            </svg> 
+
 section(class='row')
-    div(class='col-12 col-md-8')
-        h1(class='main-head-smaller') Hello! My name is 
-            br(class='d-block d-lg-block')
+    div(class='col-12')
+        h1(class='page-title main-head-smaller') Hello! My name is 
+            br
             | N.R. Johnson.
         p Welcome to my website.
-        p I am an aspiring author honing my skills by writing stories on Vocal. My first chapter (which surprisingly won a runner up position in the Fantasy Prologue Challenge) is up on Vocal now.
-        p Fantasy and Sci-fi are what interest me, so you can expect my stories to be in those genres. For now I am focusing on writing the rest of the story I started with the challenge on Vocal.
-        p If you find my writing entertaining, consider signing up for updates by filling out the form on the bottom of the page.
+        p I am an aspiring author honing my skills by writing stories on Vocal. My first chapter (which surprisingly won a runner-up position in the Fantasy Prologue Challenge) is 
+            a(href='https://vocal.media/fiction/fifty-six' target='_blank' data-tip='Read Story on Vocal') up on Vocal now
+            | .
+        p Fantasy and Sci-fi are what interest me, so you can expect most of my stories to be in those genres. For now, I am focusing on writing the rest of the story I started with the Vocal challenge. But I will also engage in other challenges I find interesting.
+        p If you find my writing entertaining, consider signing up for updates by filling out the form below. You can also send me a message by using the 
+            a(href='/contact' class='nav-redir') Contact Me form
+            | .
+div(class='row')
+    div(class='col-12 col-md-4 mx-auto my-3 p-0')
+        a(href='/stories' class='btn w-100 nav-redir') View My Stories
     
-section(class='row mt-3')
+//- section(class='row mt-3')
     div(class='col-12')
-        h2(class='main-head-smaller') My latest story:
+        h2(class='page-title main-head-smaller') My latest story:
     if story
         div(class='col-12 mb-3')
             div(class='story-card')
                 div(class='row h-100 position-relative justify-content-end')
-                    figure(class='col-4 m-0 p-0 story-fig')
+                    figure(class='col-12 col-md-4 m-0 story-fig')
                         img(src=story.image alt=story.title + ' cover image' class='story-image')
-                    div(class='col-8 story-content')
+                    div(class='col-12 col-md-8 story-content')
                         h4(class='story-title')= story.title
                         hr(class='m-0 canvas')
                         div(class='story-preview')
                             | !{story.preview}
                     div(class='col-12 mb-3 mt-2')
-                        div(class='row p-0')
-                            div(class='col-md-6')
+                        div(class='row justify-content-between p-0')
+                            div(class='col-md-3')
                                 div(class='text-center mt-1')
-                                    a(href='/api/about?id=' + story._id + '&route=/' class='btn w-100' data-tip='Story Details' onclick='myAlert("<h4>About ' + story.title + '</h4>' + story.about + '", null, event)') About
-                            div(class='col-md-6 mt-2 mt-md-0')
+                                    a(href='/story=' + story._id class='btn w-100 nav-redir' data-tip='Story Details') About
+                            div(class='col-md-9 mt-2 mt-md-0')
                                 div(class='text-center mt-1')
-                                    a(href=story.url target='_blank' class='btn w-100' data-tip='Read on Vocal') Continue Reading
+                                    a(href=story.url target='_blank' class='btn btn-great w-100' data-tip='Read on Vocal') Continue Reading
                                         figure(class='text-image ms-1')
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
                                                 <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
                                                 <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
                                             </svg>
-                                    //- img(src='/images/box-arrow-up-right.svg' alt='Bootstrap Box Arrow Up Right')
+    

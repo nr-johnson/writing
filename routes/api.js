@@ -3,27 +3,46 @@
 
 const express = require('express')
 const router = express.Router()
-const request = require('request')
-const {ObjectId} = require('mongodb')
 
 // Get content for home page
 router.get('/', async (req, res) => {
     // Gets stories from database then sorts them by date.
-    let stories = await req.findMany('writing', 'stories', {published: true})
-    stories.sort(function(a, b){
-        return a.date < b.date ? -1 : a.date > b.date ? 1 : 0
-    });
-    res.render('pages/index', {
-        story: stories[0] // Sends the latest story to home page.
+    // let stories = await req.findMany('writing', 'stories', {published: true})
+    req.client.get('/writing/stories?published=true').then(resp => {
+        let stories = resp.data
+        stories.sort(function(a, b){
+            return a.date > b.date ? -1 : a.date < b.date ? 1 : 0
+        });
+        res.render('pages/index', {
+            story: stories[0] // Sends the latest story to home page.
+        })
+    }).catch(err => {
+        res.status(500).send(err)
     })
 })
 
 // Gets content for stories page
 router.get('/stories', async (req, res) => {
-    let stories = await req.findMany('writing', 'stories', {published: true})
-    
-    res.render('pages/stories', {
-        stories: stories
+    req.client.get('/writing/stories?published=true').then(resp => {
+        resp.data.sort(function(a, b){
+            return a.date > b.date ? -1 : a.date < b.date ? 1 : 0
+        });
+        res.render('pages/stories', {
+            stories: resp.data
+        })
+    }).catch(err => {
+        res.status(500).send(err)
+    })
+})
+
+// Gets info about a specific story
+router.get('/story=:id', async(req, res) => {
+    req.client.get(`/writing/stories?_id=${req.params.id}`).then(resp => {
+        res.render('pages/story', {
+            story: resp.data[0]
+        })
+    }).catch(err => {
+        res.status(500).send(err)
     })
 })
 
@@ -44,8 +63,8 @@ router.get('/contact', (req, res) => {
 router.post('/contact', (req, res) => {
     captchaUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${req.body.token}`;
     // Sends request to google captcha for score.
-    request(captchaUrl, async (error, response, body) => {
-        const score = JSON.parse(body).score
+    req.client.get(captchaUrl).then(async resp => {
+        const score = resp.data.score
         console.log(`Captcha score: ${score}`)
         // If captcha score is above 0.4 it can be assumed that the request was made by a human and the email is sent. 
         if(score >= 0.4) {
@@ -69,7 +88,7 @@ router.post('/contact', (req, res) => {
                 to: 'main.nrjohnson@gmail.com',
                 subject: 'Contact Form',
                 html: `<p>From: ${req.body.firstName} ${req.body.lastName} (${req.body.email})</p>
-                    <p>Subscribed: ${req.body.subscribe}</p>
+                    <p>Subscribed: ${req.body.subscribe ? true : false}</p>
                     <p>Message:</p>
                     <p>${req.body.message}</p>`
             };
@@ -79,6 +98,8 @@ router.post('/contact', (req, res) => {
         } else { // If captcha score is too low it rejects the request.
             res.send({ok: false, resp: 'Message not sent. Captcha score too low.'})
         }
+    }).catch(err => {
+        res.status(500).send(err)
     })
     
 })
@@ -86,8 +107,8 @@ router.post('/contact', (req, res) => {
 router.post('/signup', async (req, res) => {
     captchaUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${req.body.token}`;
     // Sends request to google captcha for score.
-    request(captchaUrl, async (error, response, body) => {
-        const score = JSON.parse(body).score
+    req.client.get(captchaUrl).then(async resp => {
+        const score = resp.data.score
         console.log(`Captcha score: ${score}`)
         // If captcha score is above 0.4 it can be assumed that the request was made by a human and the email is sent. 
         if(score >= 0.4) {
@@ -110,7 +131,8 @@ router.post('/signup', async (req, res) => {
         } else { // If captcha score is too low it rejects the request.
             res.send({ok: false, resp: 'Captcha score too low.'})
         }
-        
+    }).catch(err => {
+        res.status(500).send(err)
     })
     
 })
@@ -119,12 +141,14 @@ router.get('/about', async (req, res) => {
     const id = req.query.id
     const route = req.query.route
 
-    const story = await req.findItem('writing', 'stories', {_id: ObjectId(id)})
+    req.client.get(`/writing/stories?_id=${id}`).then(resp => {
+        const story = resp.data
+        req.session.message = {err: false, msg: `<h4>About ${story[0].title}</h4>${story[0].about}`}
 
-    req.session.message = {err: false, msg: `<h4>About ${story[0].title}</h4>${story[0].about}`}
-
-    res.redirect(`${route}#myAlert`)
-
+        res.redirect(`${route}#myAlert`)
+    }).catch(err => {
+        res.status(500).send(err)
+    })
 })
 
 // Error page

@@ -31,60 +31,93 @@ document.getElementById('myAlertBack').addEventListener('click', event => {
 })
 
 // Highjacks the functionality of all links so the data can be loaded without loading a new page (discount react).
-document.querySelectorAll('.nav-redir').forEach(link => {
-    link.addEventListener('click', (event) => {
-        pageChange(null, new URL(link.href).pathname) // Changes the page, second variable is the url path
-        event.preventDefault() // Prevent link from navigating the page.
+setLinkEvents()
+function setLinkEvents() {
+    document.querySelectorAll('.nav-redir').forEach(link => {
+        link.addEventListener('click', (event) => {
+            pageChange(null, new URL(link.href).pathname) // Changes the page, second variable is the url path
+            event.preventDefault() // Prevent link from navigating the page.
+        })
     })
-})
+}
 
+let loading = false
 // Function that loads new page data onto the site.
 async function pageChange(event, route) {
     if(event) {
         event.preventDefault() // If called by popstate it prevents it from navigating to its default location.
-        
     } else {
         if(new URL(window.location).pathname == route) return // Prevents the page from reloading the same information.
     }
+    
+    
 
     const content = document.getElementById('content') // Div for data to be loaded into.
     const head = document.getElementsByTagName('head')[0] // Document 'head' tag.
-    // Sets attribute on header that is used to style nav indicator
-    document.getElementById('mainBody').setAttribute('data-loc', route) 
 
-    // window.scroll(0,0)
+    /*
+        The 'loading' variable is used to prevent loading in the new page one is currently being loaded.
+        Without disabling interaction the user can rapidly swap menus which will break the site and cause major glitching.
+    */
+    if(!loading) {
+        loading = true
 
-    content.classList.add('fade') // Hides pages content
-    content.innerHTML = '' // Deletes Page Content
-    // Removes elements from the head that are specfic to the previosly loaded page.
-    head.querySelectorAll('.var-head').forEach(tag => {
-        tag.parentNode.removeChild(tag)
-    })
+        // Adds navigation to browser history.
+        addToHistory(location.pathname)
 
-    const url = 'https://' + window.location.hostname + '/api' + route
-    const data = await serverRequest(url, 'GET') // Gets data from server
+        // Sets attribute on header that is used to style nav indicator
+        document.getElementById('mainBody').setAttribute('data-loc', route) 
 
-    // Seperates content into head elements and body elements.
-    const sep = data.split("<hr class='sep'>")
-    const holdiv = document.createElement('div')
-    holdiv.innerHTML = sep[1] ? sep[0] : ''
-    
-    while(holdiv.children.length > 0) {
-        head.append(holdiv.children[0])
+        // window.scroll(0,0)
+
+        content.classList.add('fade') // Hides pages content
+        content.innerHTML = '' // Deletes Page Content
+        // Removes elements from the head that are specfic to the previosly loaded page.
+        head.querySelectorAll('.var-head').forEach(tag => {
+            tag.parentNode.removeChild(tag)
+        })
+
+        const url = 'https://' + window.location.hostname + '/api' + route
+        const data = await serverRequest(url, 'GET') // Gets data from server
+
+        // Seperates content into head elements and body elements.
+        const sep = data.split("<hr class='sep'>")
+        const holdiv = document.createElement('div')
+        holdiv.innerHTML = sep[1] ? sep[0] : ''
+        
+        while(holdiv.children.length > 0) {
+            head.append(holdiv.children[0])
+        }
+        content.innerHTML = sep[1] ? sep[1] : sep[0] // Adds data to page
+        content.classList.remove('fade') // Shows page content
+
+        
+
+        // Sets document title (relying on data from server resulted in glitchy behavior)
+        // It uses the url path (route variable) unless its the index, which has now path.
+        if(route.length > 24) {
+            document.title = 'NRJohnson | ' + document.getElementById('title').innerHTML
+        } else {
+            document.title = route.length > 1 ? 'NRJohnson | ' + route.substring(1,2).toUpperCase() + route.substring(2) : 'NRJohnson | Home'
+        }
+
+        // Adds navigation to browser history.
+        addToHistory(route)
+
+        if(route == '/map') loadFrame() // Loads map iframe if page loaded is the map page.
+
+        loading = false // Reenables menu interaction
+
+        addTipEvents() // Adds event listeners to any elements with the 'data-tip' attribute.
+        setLinkEvents() // Adds event listeners to any links that navigate locally.
     }
-    content.innerHTML = sep[1] ? sep[1] : sep[0] // Adds data to page
-    content.classList.remove('fade') // Shows page content
 
-    
-
-    // Sets document title (relying on data from server resulted in glitchy behavior)
-    // It uses the url path (route variable) unless its the index, which has now path.
-    document.title = route.length > 1 ? 'NRJohnson | ' + route.substring(1,2).toUpperCase() + route.substring(2) : 'NRJohnson | Home'
-
-    // Adds navigation to browser history.
-    addToHistory(route)
-
-    if(route == '/map') loadFrame() // Loads map iframe if page loaded is the map page.
+    /*
+        The 'loading' variable worked to prevent the page from breaking.
+        However, if the user to spam the menu the 'loading' variable will be stuck in true.
+        The timeout ensures that the menu will always be enabled after a brief pause.
+    */
+    setTimeout(() => { loading = false }, 250)
 }
 
 // This loads in the iframe containing the map. This is done using JS because it won't function without it. So a message will be displayed by default if this function is not called.
@@ -206,7 +239,7 @@ async function signUp(event, form) {
         // If response is good, sends confirmation message to user.
         if(resp.ok) {
             myAlert(
-                "<p>Hello " + fields[0].value.split(' ')[0] + "!</p><p>Thank you for signing up to receive updates.</p>"
+                "<p>Hello " + fields[0].value.split(' ')[0] + "!</p><p>Thank you for signing up to receive updates.</p><p class='note'>Note: I havn't worked through managing email campaigns yet, so you won't receive anything from me until I do figure it out..</p>"
             )
         } else {
             // If server response has an error it sends that to the user.
@@ -311,4 +344,30 @@ function enableScroll() {
     body.style.overflow = 'unset'
     body.style.paddingRight = 'unset'
     body.style.overflowX = 'hidden'
+}
+
+// I made a custom tooltip using the 'data-tip' attribute.
+// Most of the details for the tooltips are handled using css, but I wanted to add mouse tracking to make it feel smoother.
+addTipEvents() // Calls the function to add event listeners on page load. Also class in the 'pageChange' function.
+function addTipEvents() {
+    // Grabs all elemenets with the 'data-tip' attribute.
+    document.querySelectorAll('[data-tip]').forEach(link => {
+        // Adds listener to each.
+        link.addEventListener('mousemove', (e) => { 
+            link.classList.add('moving') // Prevents css transition timing.
+
+            // Mouse positions
+            let mouseX = e.clientX
+            let mouseY = e.clientY
+
+            // Elements objective position in the window
+            const pos = link.getBoundingClientRect()
+            const posX = pos.left
+            const posY = pos.top
+
+            // custom css properties are used to adjust to tips. This is done because the tips are psudo elements and can't be directly edited with javascript.
+            document.documentElement.style.setProperty('--tempY', ((mouseY - posY) - 5) + 'px')
+            document.documentElement.style.setProperty('--tempX', ((mouseX - posX) - 5) + 'px')
+        })
+    })
 }
