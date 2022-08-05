@@ -26,16 +26,39 @@ function siteOps() {
                 // If the request is a specific story it handles the request differently then the other routes (extra path).
                 if(story) {
                     req.client.get(`/writing/stories?_id=${story}`).then(resp => {
-                        const storyHtml = pug.renderFile(`${folder}story.pug`, {
-                            story: resp.data[0]
-                        })
-                        resolve(storyHtml)
+                        if(resp.data.length > 0) {
+                            const storyHtml = pug.renderFile(`${folder}story.pug`, {
+                                story: resp.data[0]
+                            })
+                            resolve(storyHtml)
+                        } else {
+                            let err = new Error(`Cannot find page with route "/${route}/${story}"`);
+                            err.status = 404;
+                            reject(err)
+                        }
                     }).catch(err => {
                         reject(err)
                     })
                 } else {
                     // Depending on the route, it gathers the data and returns it.
                     switch(route) {
+                        // Home route
+                        case '':
+                            // This is the default route (the index page).
+                            // Gets stories from database then sorts them by date.
+                            req.client.get('/writing/stories?published=true').then(resp => {
+                                let stories = resp.data
+                                stories.sort(function(a, b){
+                                    return a.date > b.date ? -1 : a.date < b.date ? 1 : 0
+                                });
+                                const indexHTML = pug.renderFile(`${folder}index.pug`, {
+                                    story: stories[0]
+                                })
+                                resolve(indexHTML)
+                            }).catch(err => {
+                                reject(err)
+                            })
+                            break
                         // Stories route
                         case 'stories':
                             // Gets stories from database then sorts them by date.
@@ -65,20 +88,9 @@ function siteOps() {
                             resolve(conatctHtml)
                             break
                         default:
-                            // This is the default route (the index page).
-                            // Gets stories from database then sorts them by date.
-                            req.client.get('/writing/stories?published=true').then(resp => {
-                                let stories = resp.data
-                                stories.sort(function(a, b){
-                                    return a.date > b.date ? -1 : a.date < b.date ? 1 : 0
-                                });
-                                const indexHTML = pug.renderFile(`${folder}index.pug`, {
-                                    story: stories[0]
-                                })
-                                resolve(indexHTML)
-                            }).catch(err => {
-                                reject(err)
-                            })
+                            let err = new Error(`Cannot find page with route "/${route}"`);
+                            err.status = 404;
+                            reject(err)
                     }
                 }
             })

@@ -38,7 +38,7 @@ section(class='row mt-3')
                     span  *
             div(class='col-12 mt-2')
                 label(for='subscribe' class='form-label checkbox') Get Email Updates?
-                    input#subscribe(name='subscribe' data-cleanTitle='Subscribe' checked type='checkbox')
+                    input#subscribe(type='checkbox' name='subscribe' value='subscribe' data-cleanTitle='Subscribe' checked=true onchange='alert()')
                     span(class='box')
                     p(class='note caution') Note: If you are already receiving email updates, unchecking this box will unsubscribe you.
             div(class='col-12 col-md-2 ms-auto text-end mt-4')

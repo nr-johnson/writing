@@ -112,7 +112,7 @@ app.get(['/','/:page', '/:page/:id'], async (req, res, next) => {
             mobile: req.useragent.isMobile
         })
     }).catch(err => {
-        const status = err.response ? err.reponse.status : 500
+        const status = err.response ? err.reponse.status : err.status || 500
         res.status(status).render('main', {
             data: [`<h3>Error ${status}</h3>
                 <p>${err.response ? err.response.statusText : err.message}</p>`],

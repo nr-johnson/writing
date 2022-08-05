@@ -9,64 +9,9 @@ router.get(['/', '/:page', '/:page/:story'], async (req, res) => {
     await req.getData(req.params.page || '', req.params.story).then(resp => {
         res.status(200).send(resp)
     }).catch(err => {
-        res.send(err)
+        res.status(err.status || 500).send(err)
     })
 })
-
-// // Get content for home page
-// router.get('/', async (req, res) => {
-//     // Gets stories from database then sorts them by date.
-//     // let stories = await req.findMany('writing', 'stories', {published: true})
-//     req.client.get('/writing/stories?published=true').then(resp => {
-//         let stories = resp.data
-//         stories.sort(function(a, b){
-//             return a.date > b.date ? -1 : a.date < b.date ? 1 : 0
-//         });
-//         res.render('pages/index', {
-//             story: stories[0] // Sends the latest story to home page.
-//         })
-//     }).catch(err => {
-//         res.status(500).send(err)
-//     })
-// })
-
-// // Gets content for stories page
-// router.get('/stories', async (req, res) => {
-//     req.client.get('/writing/stories?published=true').then(resp => {
-//         resp.data.sort(function(a, b){
-//             return a.date > b.date ? -1 : a.date < b.date ? 1 : 0
-//         });
-//         res.render('pages/stories', {
-//             stories: resp.data
-//         })
-//     }).catch(err => {
-//         res.status(500).send(err)
-//     })
-// })
-
-// // Gets info about a specific story
-// router.get('/story=:id', async(req, res) => {
-//     req.client.get(`/writing/stories?_id=${req.params.id}`).then(resp => {
-//         res.render('pages/story', {
-//             story: resp.data[0]
-//         })
-//     }).catch(err => {
-//         res.status(500).send(err)
-//     })
-// })
-
-// // Gets Map page
-// router.get('/map', (req, res) => {
-//     // 'mobile' variable is used to load the map iframe only if not on mobile.
-//     res.render('pages/map', {
-//         mobile: req.query.mobile ? req.query.mobile === 'true' : req.useragent.isMobile
-//     })
-// })
-
-// // Gets Contect Me page
-// router.get('/contact', (req, res) => {
-//     res.render('pages/contact')
-// })
 
 // Contact form post
 router.post('/contact', (req, res) => {
@@ -78,6 +23,7 @@ router.post('/contact', (req, res) => {
         // If captcha score is above 0.4 it can be assumed that the request was made by a human and the email is sent. 
         if(score >= 0.4) {
             // Info for mailchimp
+            console.log(req.body)
             const data = {
                 email_address: req.body.email,
                 tags: ['Contact Form'], //Used for contact source.
@@ -169,13 +115,7 @@ router.get('/error', (req, res) => {
 })
 
 // router.get('/:page', (req, res) => {
-//     let err = new Error('Not Found');
-//     err.status = 404;
-//     res.status(404)
-//     res.render('pages/error', {
-//         message: err.message,
-//         error: req.dev ? err : {}
-//     })
+
 // })
 
 

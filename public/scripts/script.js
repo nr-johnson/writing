@@ -182,8 +182,11 @@ function serverRequest(url, method, data) {
                 // If response from server is good, return the response
                 resolve(this.response)
             } else if(this.readyState == 4) {
+                console.log(this.status)
                 // If response is bad, return error status html to loaded into page.
-                resolve('<h1>Error ' + this.status + '</h1><p>Could not get data from server</p>')
+                let message = '<p>Could not get data from server</p>'
+                if(this.status == 404) message = '<p>' + this.statusText + '</p>'
+                resolve('<h1>Error ' + this.status + '</h1>' + message)
             }
         };
         
@@ -282,18 +285,20 @@ async function submitContact(event, form) {
     fields.forEach(inp => {
         const emailValidation = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
         const cleanTitle = inp.getAttribute('data-cleanTitle') // Attribute stored on the input element to provide a good looking name for the user.
+        console.log(inp.name + ', ' + inp.value)
         if(inp.value.length < 1) { // Each input is required and cannot be empty.
             errors.push(cleanTitle + ' cannot be empty.')
         } else if(inp.name == 'email' && !emailValidation.test(inp.value)) { // If email check against validation regex.
             errors.push(cleanTitle + ' is invalid.')
-        } else { // No errors, add to 'data'
-            if(inp.name == 'subscribe') { // Checkboxes return 'on', so if checkbox set as boolean.
-                data[inp.name] = inp.checked 
-            } else {
-                data[inp.name] = inp.value
-            }
+        } else {
+            data[inp.name] = inp.value
         }
     })
+    // Checkbox isn't showing up in in the field data for some reason. So this mannally checks it.
+    const sub = document.getElementById('subscribe').checked
+    if(sub) {
+        data.subscribe = true
+    }
 
     // If 'errors' array is not empty, send error to user.
     if(errors.length > 0) {
@@ -301,7 +306,7 @@ async function submitContact(event, form) {
             return '<p>' + err + '</p>'
         }).join(''), false, null, true)
     } else {
-        // Send data to server through with captcha.
+        // Send data to server with captcha.
         const res = await protectedServerRequest('https://' + window.location.hostname + '/api/contact', 'POST', data)// Sends data to server using reCAPTCHA
         const resp = JSON.parse(res)
         
