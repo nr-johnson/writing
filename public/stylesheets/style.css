@@ -57,8 +57,10 @@ h1, h2, h3, h4 {
     color: var(--accent);
 }
 .main-head-smaller {
-    font-size: 18pt;
-    font-weight: 600;
+    font-size: 18pt; 
+}
+.header-link:focus {
+    outline: none;
 }
 a:not(.no-nav, .btn, .header-link) {
     position: relative;
@@ -283,7 +285,7 @@ hr.canvas {
     position: absolute;
     right: -1.5rem;
     bottom: -3rem;
-    width: fit-content;
+    width: 1rem ;
     padding: 0 0 .3rem 0;
     z-index: 1;
 }
@@ -982,6 +984,11 @@ input[type="checkbox"]:checked ~ p {
     border-radius: 4px;
     box-shadow: 0 0 4px #00000050;
     overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.my-alert-box::-webkit-scrollbar {
+    display: none;
 }
 #myAlertText hr {
     margin-bottom: .75rem;

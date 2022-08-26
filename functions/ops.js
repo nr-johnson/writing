@@ -26,12 +26,13 @@ function siteOps() {
                 // If the request is a specific story it handles the request differently then the other routes (extra path).
                 if(story) {
                     req.client.get(`/writing/stories?_id=${story}`).then(resp => {
+                        // If the database returns with data, send html.
                         if(resp.data.length > 0) {
                             const storyHtml = pug.renderFile(`${folder}story.pug`, {
                                 story: resp.data[0]
                             })
                             resolve(storyHtml)
-                        } else {
+                        } else { // Server responded but data was empty. Sends a 404 error.
                             let err = new Error(`Cannot find page with route "/${route}/${story}"`);
                             err.status = 404;
                             reject(err)
@@ -83,10 +84,14 @@ function siteOps() {
                             })
                             resolve(mapHtml)
                             break
+
+                        // Contact Route
                         case 'contact':
-                            const conatctHtml = pug.renderFile(`${folder}contact.pug`)
-                            resolve(conatctHtml)
+                            const conactHtml = pug.renderFile(`${folder}contact.pug`)
+                            resolve(conactHtml)
                             break
+
+                        // 404 Catch
                         default:
                             let err = new Error(`Cannot find page with route "/${route}"`);
                             err.status = 404;
