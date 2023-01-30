@@ -39,8 +39,8 @@ router.post('/contact', (req, res) => {
             }
             // Options for email sent to me.
             var mailOptions = {
-                from: 'Stories - NRJohnson <contact@nrjohnson.net>',
-                to: 'main.nrjohnson@gmail.com',
+                from: 'Stories - NRJohnson <system@nrjohnson.net>',
+                to: 'contact@nrjohnson.net',
                 subject: 'Contact Form',
                 html: `<p>From: ${req.body.firstName} ${req.body.lastName} (${req.body.email})</p>
                     <p>Subscribed: ${req.body.subscribe ? true : false}</p>
@@ -82,6 +82,16 @@ router.post('/signup', async (req, res) => {
                 status: 'subscribed'
             }
             let submit = await req.addUpdateChimp(data) // Attempts to add new MailChimp member.
+
+            // Sends notification that I have received a new subscriber
+            var mailOptions = {
+                from: 'Stories - NRJohnson <system@nrjohnson.net>',
+                to: 'contact@nrjohnson.net',
+                subject: 'New Subscriber!',
+                html: `<h1>New Subscriber!</h1>
+                    <p>${req.body.name} (${req.body.email}) has subscribed to notifications!</p>`
+            };
+            await req.sendMail(mailOptions) // Sends me the email.
             res.send(submit) // Send response from MailChimp function to user.
         } else { // If captcha score is too low it rejects the request.
             res.send({ok: false, resp: 'Captcha score too low.'})

@@ -203,6 +203,7 @@ function serverRequest(url, method, data) {
 // Takes over browser back button
 window.addEventListener('popstate', (e) => {
     const location = history.state;
+    console.log('navigating to ' + location)
     // Changes page data if item was added to history, else it's allowed to navigate back in it's defualt way.
     location ? pageChange(e, location) : window.history.back()
 });
@@ -212,6 +213,7 @@ function addToHistory(route) {
     // If the current state is different than the previous, the new state is added to history
     // It also changes the current url (push state third param), which allows the user to refresh the page without returning to the home page.
     history.state != route && history.pushState(route, null, route)
+    console.log(route + ' added to history')
 }
 
 // Signup form validation
